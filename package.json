@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://prathameshk0710.github.io/PortfolioWebApp",
+  "homepage": "https://prathameshkondawale.in",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
