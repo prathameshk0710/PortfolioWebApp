@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaLinkedin, FaGithub } from 'react-icons/fa'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import { personalInfo } from '../constants/personalInfo'
+import emailjs from '@emailjs/browser'
+
 
 const Contact = () => {
   const { ref, isInView } = useScrollAnimation()
@@ -14,10 +16,18 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // Handle form submission here
-    console.log('Form submitted:', formData)
-    alert('Thank you for your message! I will get back to you soon.')
-    setFormData({ name: '', email: '', message: '' })
+      emailjs.send('service_a6g3t8a', 'template_hpo5seb',{
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+      },
+      'y3RuUPEghLyz-8wFW'
+    ).then((result) => {
+      // alert('Thank you for your message! I will get back to you soon.');
+      setFormData({ name: '', email: '', message: '' });
+    }, (error) => {
+      alert('Sorry, something went wrong. Please try again later.');
+    });
   }
 
   const handleChange = (e) => {
