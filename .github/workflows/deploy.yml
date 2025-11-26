@@ -34,6 +34,12 @@ jobs:
         VITE_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_TEMPLATE_ID }}
         VITE_EMAILJS_PUBLIC_KEY: ${{ secrets.VITE_EMAILJS_PUBLIC_KEY }}
 
+    - name: Check secrets existence
+    run: |
+      echo "EmailJS Service ID length: ${#VITE_EMAILJS_SERVICE_ID}"
+      echo "EmailJS Template ID length: ${#VITE_EMAILJS_TEMPLATE_ID}"
+      echo "EmailJS Public Key length: ${#VITE_EMAILJS_PUBLIC_KEY}"
+
     - name: Setup Git user
       run: |
         git config --global user.name "${{ secrets.GIT_USER_NAME }}"
