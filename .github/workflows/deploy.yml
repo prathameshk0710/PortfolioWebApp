@@ -32,13 +32,13 @@ jobs:
         VITE_EMAILJS_SERVICE_ID: ${{ secrets.VITE_EMAILJS_SERVICE_ID }}
         VITE_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_TEMPLATE_ID }}
         VITE_EMAILJS_PUBLIC_KEY: ${{ secrets.VITE_EMAILJS_PUBLIC_KEY }}
-      run: npm run build
-
-    - name: Check secrets existence
       run: |
         echo "EmailJS Service ID length: ${#VITE_EMAILJS_SERVICE_ID}"
         echo "EmailJS Template ID length: ${#VITE_EMAILJS_TEMPLATE_ID}"
         echo "EmailJS Public Key length: ${#VITE_EMAILJS_PUBLIC_KEY}"
+        npm run build
+
+      
 
     - name: Setup Git user
       run: |
