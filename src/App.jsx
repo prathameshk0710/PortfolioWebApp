@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
@@ -8,14 +9,13 @@ import Projects from './components/Projects'
 import TechStack from './components/TechStack'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import StudyMaterials from './components/StudyMaterials'
 
-function App() {
+function Portfolio() {
   const [darkMode, setDarkMode] = useState(false)
 
   useEffect(() => {
-    // Scroll to top on initial mount (fix refresh scroll issue)
-    window.scrollTo(0, 0);
-    // Check for saved theme preference or default to light mode
+    window.scrollTo(0, 0)
     const savedTheme = localStorage.getItem('theme')
     if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       setDarkMode(true)
@@ -46,6 +46,15 @@ function App() {
       <Contact />
       <Footer />
     </div>
+  )
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Portfolio />} />
+      <Route path="/study-materials" element={<StudyMaterials />} />
+    </Routes>
   )
 }
 
