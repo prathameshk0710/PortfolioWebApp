@@ -1,0 +1,26 @@
+[
+  {
+    "heading": "Arrays",
+    "subheading": "Linear Data Structure — Contiguous Memory",
+    "description": "An array is a collection of elements stored at contiguous memory locations. It allows O(1) random access using an index. Arrays are the foundation of most data structures and are heavily used in competitive programming.\n\nKey operations:\n• Access — O(1)\n• Search — O(n)\n• Insertion at end — O(1) amortized\n• Insertion at position — O(n)\n• Deletion — O(n)",
+    "image": ""
+  },
+  {
+    "heading": "Linked Lists",
+    "subheading": "Dynamic Linear Data Structure",
+    "description": "A linked list is a sequence of nodes where each node stores data and a pointer to the next node. Unlike arrays, linked lists do not require contiguous memory and allow efficient insertions/deletions at any position.\n\nTypes:\n• Singly Linked List — each node points to next\n• Doubly Linked List — each node points to next and previous\n• Circular Linked List — last node points back to head",
+    "image": ""
+  },
+  {
+    "heading": "Trees & Binary Search Trees",
+    "subheading": "Hierarchical Data Structure",
+    "description": "A tree is a hierarchical structure with a root node and children. A Binary Search Tree (BST) maintains the property: left child < parent < right child, enabling O(log n) search, insert, and delete in balanced cases.\n\nCommon tree types:\n• Binary Tree — at most 2 children per node\n• AVL Tree — self-balancing BST\n• Red-Black Tree — balanced BST used in STL map/set\n• Segment Tree — range query structure",
+    "image": ""
+  },
+  {
+    "heading": "Graphs",
+    "subheading": "Non-Linear Data Structure",
+    "description": "A graph G = (V, E) consists of vertices and edges. Graphs model relationships and networks. Key algorithms include BFS, DFS, Dijkstra's shortest path, and Kruskal's/Prim's MST.\n\nRepresentations:\n• Adjacency Matrix — O(V²) space, O(1) edge lookup\n• Adjacency List — O(V+E) space, efficient traversal",
+    "image": ""
+  }
+]

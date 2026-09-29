@@ -1,0 +1,14 @@
+[
+  {
+    "heading": "OSI Model",
+    "subheading": "Seven Layers of Networking",
+    "description": "The OSI (Open Systems Interconnection) model divides network communication into 7 layers:\n\n7. Application — HTTP, FTP, SMTP\n6. Presentation — encryption, compression\n5. Session — session management\n4. Transport — TCP, UDP\n3. Network — IP, routing\n2. Data Link — MAC, switching\n1. Physical — cables, signals\n\nThe TCP/IP model simplifies this into 4 layers: Application, Transport, Internet, Network Access.",
+    "image": ""
+  },
+  {
+    "heading": "TCP vs UDP",
+    "subheading": "Transport Layer Protocols",
+    "description": "TCP (Transmission Control Protocol):\n• Connection-oriented (3-way handshake)\n• Reliable — guarantees delivery and ordering\n• Flow control & congestion control\n• Used in: HTTP, FTP, Email\n\nUDP (User Datagram Protocol):\n• Connectionless\n• Unreliable — no delivery guarantee\n• Faster, lower overhead\n• Used in: DNS, video streaming, gaming",
+    "image": ""
+  }
+]

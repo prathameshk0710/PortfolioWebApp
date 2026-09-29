@@ -1,0 +1,20 @@
+[
+  {
+    "heading": "Normalization",
+    "subheading": "Reducing Redundancy in Relational Databases",
+    "description": "Normalization organizes tables to minimize redundancy and dependency. Normal forms:\n\n• 1NF — Atomic values, no repeating groups\n• 2NF — 1NF + no partial dependencies\n• 3NF — 2NF + no transitive dependencies\n• BCNF — every determinant is a candidate key\n\nDenormalization is sometimes used for read-heavy workloads to improve query performance at the cost of redundancy.",
+    "image": ""
+  },
+  {
+    "heading": "SQL Joins & Queries",
+    "subheading": "Combining Data Across Tables",
+    "description": "Joins combine rows from two or more tables based on related columns.\n\nTypes of Joins:\n• INNER JOIN — only matching rows\n• LEFT JOIN — all from left + matching from right\n• RIGHT JOIN — all from right + matching from left\n• FULL OUTER JOIN — all rows from both tables\n• CROSS JOIN — cartesian product\n• SELF JOIN — table joined with itself",
+    "image": ""
+  },
+  {
+    "heading": "Transactions & ACID Properties",
+    "subheading": "Ensuring Data Integrity",
+    "description": "A transaction is a logical unit of work. ACID properties guarantee reliable processing:\n\n• Atomicity — all or nothing\n• Consistency — valid state transitions\n• Isolation — concurrent transactions don't interfere\n• Durability — committed data survives crashes\n\nIsolation levels: Read Uncommitted, Read Committed, Repeatable Read, Serializable.",
+    "image": ""
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "heading": "Process Management",
+    "subheading": "Processes, Threads & Scheduling",
+    "description": "A process is a program in execution with its own memory space. Threads are lightweight sub-units of a process sharing the same address space.\n\nCPU Scheduling Algorithms:\n• FCFS (First Come First Serve) — simple, non-preemptive\n• SJF (Shortest Job First) — optimal average waiting time\n• Round Robin — time-quantum based, preemptive\n• Priority Scheduling — based on priority values\n• MLFQ — Multi-Level Feedback Queue",
+    "image": ""
+  },
+  {
+    "heading": "Memory Management",
+    "subheading": "Virtual Memory, Paging & Segmentation",
+    "description": "The OS manages memory allocation for processes. Virtual memory allows processes to use more memory than physically available by swapping pages between RAM and disk.\n\nPage Replacement Algorithms:\n• FIFO — replace the oldest page\n• LRU (Least Recently Used) — replace least recently accessed\n• Optimal — replace page not needed for longest time (theoretical)",
+    "image": ""
+  },
+  {
+    "heading": "Deadlocks",
+    "subheading": "Conditions, Prevention & Detection",
+    "description": "A deadlock occurs when processes are stuck waiting for resources held by each other. Four necessary conditions (Coffman conditions):\n\n1. Mutual Exclusion — resource held exclusively\n2. Hold and Wait — holding one, waiting for another\n3. No Preemption — resources can't be forcibly taken\n4. Circular Wait — circular chain of waiting processes\n\nPrevention strategies break one or more of these conditions. Banker's algorithm is used for deadlock avoidance.",
+    "image": ""
+  }
+]

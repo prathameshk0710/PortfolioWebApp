@@ -1,0 +1,228 @@
+SOLID Properties
+
+1. Single Responsibility Principle
+This principle states that “A class should have only one reason to change” which means every class should have a single responsibility or single job or single purpose. In other words, a class should have only one job or purpose within the software system.
+
+2. Open/Closed Principle
+This principle states that “Software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification” which means you should be able to extend a class behavior, without modifying it.
+
+3. Liskov’s Substitution Principle
+The principle was introduced by Barbara Liskov in 1987 and according to this principle “Derived or child classes must be substitutable for their base or parent classes“. This principle ensures that any class that is the child of a parent class should be usable in place of its parent without any unexpected behavior.
+
+4. Interface Segregation Principle
+This principle is the first principle that applies to Interfaces instead of classes in SOLID and it is similar to the single responsibility principle. It states that “do not force any client to implement an interface which is irrelevant to them“. Here your main goal is to focus on avoiding fat interface and give preference to many small client-specific interfaces. You should prefer many client interfaces rather than one general interface and each interface should have a specific responsibility.
+
+5. Dependency Inversion Principle
+The Dependency Inversion Principle (DIP) is a principle in object-oriented design that states that “High-level modules should not depend on low-level modules. Both should depend on abstractions“. Additionally, abstractions should not depend on details. Details should depend on abstractions.
+
+
+
+Interface
+All functions are pure virtual functions
+
+
+
+What is meant by Inheritance?
+The term “inheritance” means “receiving some quality or behavior from a parent to an offspring.” In object-oriented programming, inheritance is the mechanism by which an object or class (referred to as a child) is created using the definition of another object or class (referred to as a parent). Inheritance not only helps to keep the implementation simpler but also helps to facilitate code reuse.
+
+Public->public = public
+Public->private = private
+Public->protected = protected
+
+Private->public = NA
+Private->private=NA
+Private->protected = NA
+
+Protected->public = protected
+Protected->private = private
+Protected->protected = protected
+
+The various types of inheritance include:
+* Single inheritance
+* Multiple inheritances
+* Multi-level inheritance
+* Hierarchical inheritance
+* Hybrid inheritance
+￼
+/Users/prathameshkondawale/Library/Containers/com.apple.Notes/Data/tmp/TemporaryItems/NSIRD_Notes_Sgbzdh/HardLinkURLTemp/F77AC3A2-F13F-42C1-B3C9-54C296192919/1712254153/Types Of Inheritance.png
+
+
+What is encapsulation?
+All the necessary data and methods are bind together and all the unnecessary details are hidden to the normal user. So Encapsulation is the process of binding data members and methods of a program together to do a specific job, without revealing unnecessary details.
+
+Encapsulation can also be defined in two different ways:  1) Data hiding: Encapsulation is the process of hiding unwanted information, such as restricting access to any member of an object.  2) Data binding: Encapsulation is the process of binding the data members and the methods together as a whole, as a class.
+
+Fully encapsulated class are all data members are private.
+Classes can be marked read only.
+Code readability 
+
+
+
+Static keyword
+Belongs to class
+
+Static function dont have this keyword
+Static function can only access static members.
+
+
+Destructor
+For static allocation destructor is called automatic.
+But for dynamic allocation we have to call destructor using "delete" keyword.
+
+
+This pointer
+It is pointer which stores the address of current member of the class.
+
+
+
+Can we run a Java application without implementing the OOPs concept?
+No. Java applications are based on Object-oriented programming models or OOPs concept, and hence they cannot be implemented without it.
+However, on the other hand, C++ can be implemented without OOPs, as it also supports the C-like structural programming model.
+
+
+What is meant by Garbage Collection in OOPs world?
+Object-oriented programming revolves around entities like objects. Each object consumes memory and there can be multiple objects of a class. So if these objects and their memories are not handled properly, then it might lead to certain memory-related errors and the system might fail.
+Garbage collection refers to this mechanism of handling the memory in the program. Through garbage collection, the unwanted memory is freed up by removing the objects that are no longer needed.
+
+
+What is meant by exception handling?
+No one wants its software to fail or crash. Exceptions are the major reason for software failure. The exceptions can be handled in the program beforehand and prevent the execution from stopping. This is known as exception handling. So exception handling is the mechanism for identifying the undesirable states that the program can reach and specifying the desirable outcomes of such states. Try-catch is the most common method used for handling exceptions in the program.
+
+
+
+
+What is an exception?
+An exception can be considered as a special event, which is raised during the execution of a program at runtime, that brings the execution to a halt. The reason for the exception is mainly due to a position in the program, where the user wants to do something for which the program is not specified, like undesirable input.
+
+
+
+What are access specifiers and what is their significance?
+Access specifiers, as the name suggests, are a special type of keywords, which are used to control or specify the accessibility of entities like classes, methods, etc. Some of the access specifiers or access modifiers include “private”, “public”, etc. These access specifiers also play a very vital role in achieving Encapsulation - one of the major features of OOPs.
+
+
+
+How is an abstract class different from an interface?
+Interface and abstract classes both are special types of classes that contain only the methods declaration and not their implementation. But the interface is entirely different from an abstract class. The main difference between the two is that when an interface is implemented, the subclass must define all its methods and provide its implementation. Whereas in object-oriented programming, when a subclass inherits from an abstract class with abstract methods, the subclass is generally required to provide concrete implementations for all of those abstract methods in the abstract class unless the subclass itself is declared as abstract.
+Also, an abstract class can contain abstract methods as well as non-abstract methods.
+
+
+
+What is an abstract class?
+An abstract class is a special class containing abstract methods. The significance of abstract class is that the abstract methods inside it are not implemented and only declared. So as a result, when a subclass inherits the abstract class and needs to use its abstract methods, they need to define and implement them.
+
+
+
+What is diamond problem?
+The "Diamond Problem" is a term used in object-oriented programming, particularly in languages that support multiple inheritance, such as Java. It refers to a situation where a class inherits from two classes that have a common ancestor. If the derived class calls a method or uses a field that is defined in the common ancestor, and both parent classes provide different implementations for that method or field, a conflict arises. Resolving such conflicts becomes a challenge, and it is named the "Diamond Problem" due to the shape of the class hierarchy diagram.
+
+To solve this problem:
+JAVA uses interface.
+C++ used virtual inheritance or using scope resolution operator (::)
+
+
+
+
+Are there any limitations of Inheritance?
+Yes, with more powers comes more complications. Inheritance is a very powerful feature in OOPs, but it has some limitations too. Inheritance needs more time to process, as it needs to navigate through multiple classes for its implementation. Also, the classes involved in Inheritance - the base class and the child class, are very tightly coupled together. So if one needs to make some changes, they might need to do nested changes in both classes. Inheritance might be complex for implementation, as well. So if not correctly implemented, this might lead to unexpected errors or incorrect outputs.
+
+
+
+Are class and structure the same? If not, what's the difference between a class and a structure?
+No, class and structure are not the same. Though they appear to be similar, they have differences that make them apart. For example, the structure is saved in the stack memory, whereas the class is saved in the heap memory. Also, Data Abstraction cannot be achieved with the help of structure, but with class, Abstraction is majorly used.
+
+
+
+
+
+What is a constructor?
+Constructors are special methods whose name is the same as the class name. The constructors serve the special purpose of initializing the objects.
+
+Default constructor: The default constructor is the constructor which doesn’t take any argument. It has no parameters.
+
+Parameterized constructor: The constructors that take some arguments are known as parameterized constructors.
+
+Copy constructor: A copy constructor is a member function that initializes an object using another object of the same class. It copies the values of one class members to another class members.
+
+
+
+
+Is it always necessary to create objects from class?
+No. An object is necessary to be created if the base class has non-static methods. But if the class has static methods, then objects don’t need to be created. You can call the class method directly in this case, using the class name.
+
+
+
+
+What is Abstraction?
+If you are a user, and you have a problem statement, you don't want to know how the components of the software work, or how it's made. You only want to know how the software solves your problem. Abstraction is the method of hiding unnecessary details from the necessary ones. It is one of the main features of OOPs.  For example, consider a car. You only need to know how to run a car, and not how the wires are connected inside it. This is obtained using Abstraction.
+Ex: Stack, Queues etc (in STL)
+You only intend to know how to use these STL and not to know the are code.
+
+
+
+
+
+What is Polymorphism?
+Polymorphism is composed of two words - “poly” which means “many”, and “morph” which means “shapes”. Therefore Polymorphism refers to something that has many shapes.
+
+In OOPs, Polymorphism refers to the process by which some code, data, method, or object behaves differently under different circumstances or contexts. Compile-time polymorphism and Run time polymorphism are the two types of polymorphisms in OOPs languages.
+
+Compile Time Polymorphism: Compile time polymorphism, also known as Static Polymorphism, refers to the type of Polymorphism that happens at compile time. What it means is that the compiler decides what shape or value has to be taken by the entity in the picture.
+Ex: Function overloading, Operator overloading
+
+Runtime Polymorphism: Runtime polymorphism, also known as Dynamic Polymorphism, refers to the type of Polymorphism that happens at the run time. What it means is it can't be decided by the compiler. Therefore what shape or value has to be taken depends upon the execution. Hence the name Runtime Polymorphism.
+Ex: Method over-ridding 
+
+
+
+
+
+What is an object?
+An object refers to the instance of the class, which contains the instance of the members and behaviors defined in the class template. In the real world, an object is an actual entity to which a user interacts, whereas class is just the blueprint for that object. So the objects consume space and have some characteristic behavior.
+
+Class never takes memory space when an object is created then only the space is allocated to that object.
+An object of empty class has memory of 1 byte for unique identification of that object.
+
+
+
+
+What is a class?
+A class can be understood as a template or a blueprint, which contains some values, known as member data or member, and some set of rules, known as behaviors or functions. So when an object is created, it automatically takes the data and functions that are defined in the class. Therefore the class is basically a template or blueprint for objects. Also one can create as many objects as they want based on a class.
+
+
+
+What are the main features of OOPs?
+OOPs or Object Oriented Programming mainly comprises of the below four features, and make sure you don't miss any of these:
+* Inheritance
+* Encapsulation
+* Polymorphism
+* Data Abstraction  
+
+
+
+What are some major Object Oriented Programming languages?
+The programming languages that use and follow the Object-Oriented Programming paradigm or OOPs, are known as Object-Oriented Programming languages. Some of the major Object-Oriented Programming languages include:
+* Java
+* C++
+* Javascript
+* Python
+* PHP
+And many more.
+
+
+
+
+What is the need for OOPs?
+There are many reasons why OOPs is mostly preferred, but the most important among them are: 
+* OOPs helps users to understand the software easily, although they don’t know the actual implementation.
+* With OOPs, the readability, understandability, and maintainability of the code increase multifold.
+* Even very big software can be easily written and managed easily using OOPs.
+
+
+
+
+
+What is meant by the term OOPs?
+OOPs refers to Object-Oriented Programming. It is the programming paradigm that is defined using objects. Objects can be considered as real-world instances of entities like class, that have some characteristics and behaviors.
+
+
+
