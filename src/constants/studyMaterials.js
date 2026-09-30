@@ -1,10 +1,11 @@
-import { FaCode, FaServer, FaDatabase, FaNetworkWired, FaJava, FaCubes } from 'react-icons/fa'
+import { FaCode, FaServer, FaDatabase, FaNetworkWired, FaJava, FaCubes, FaLeaf } from 'react-icons/fa'
 import javaTopics from './notes/java.json'
 import oopsTopics from './notes/oops.json'
 import dsaTopics from './notes/dsa.json'
 import osTopics from './notes/os.json'
 import dbmsTopics from './notes/dbms.json'
 import cnTopics from './notes/cn.json'
+import springTopics from './notes/spring.json'
 
 export const studyMaterials = [
   {
@@ -20,12 +21,6 @@ export const studyMaterials = [
     topics: oopsTopics,
   },
   {
-    id: 'dsa',
-    name: 'Data Structures & Algorithms',
-    icon: FaCode,
-    topics: dsaTopics,
-  },
-  {
     id: 'os',
     name: 'Operating Systems',
     icon: FaServer,
@@ -33,14 +28,14 @@ export const studyMaterials = [
   },
   {
     id: 'dbms',
-    name: 'Database Management',
+    name: 'Database Management Sysmtem',
     icon: FaDatabase,
     topics: dbmsTopics,
   },
   {
-    id: 'cn',
-    name: 'Computer Networks',
-    icon: FaNetworkWired,
-    topics: cnTopics,
+    id: 'spring',
+    name: 'Spring & Spring Boot',
+    icon: FaLeaf,
+    topics: springTopics,
   },
 ]

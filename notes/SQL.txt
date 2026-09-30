@@ -1,0 +1,107 @@
+What is a Self-Join?
+A self JOIN is a case of regular join where a table is joined to itself based on some relation between its own column(s). Self-join uses the INNER JOIN or LEFT JOIN clause and a table alias is used to assign different names to the table within the query.
+SELECT A.emp_id AS "Emp_ID",A.emp_name AS "Employee",
+B.emp_id AS "Sup_ID",B.emp_name AS "Supervisor"
+FROM employee A, employee B
+WHERE A.emp_sup = B.emp_id;
+
+
+
+
+What is a Join? List its different types.
+The SQL Join clause is used to combine records (rows) from two or more tables in a SQL database based on a related column between the two.
+￼
+There are four different types of JOINs in SQL:
+* (INNER) JOIN: Retrieves records that have matching values in both tables involved in the join. This is the widely used join for queries.
+SELECT *
+FROM Table_A
+JOIN Table_B;
+SELECT *
+FROM Table_A
+INNER JOIN Table_B;
+* LEFT (OUTER) JOIN: Retrieves all the records/rows from the left and the matched records/rows from the right table.
+SELECT *
+FROM Table_A A
+LEFT JOIN Table_B B
+ON A.col = B.col;
+* RIGHT (OUTER) JOIN: Retrieves all the records/rows from the right and the matched records/rows from the left table.
+SELECT *
+FROM Table_A A
+RIGHT JOIN Table_B B
+ON A.col = B.col;
+* FULL (OUTER) JOIN: Retrieves all the records where there is a match in either the left or right table.
+SELECT *
+FROM Table_A A
+FULL JOIN Table_B B
+ON A.col = B.col;
+
+/Users/prathameshkondawale/Documents/my-projects/PortfolioWebApp/public/study-materials/joins.jpg
+
+
+
+What is an index?
+An index helps to speed up searches in a database. Without an index on columns within the WHERE clause, the SQL server will have to go over entire tables and check every row to ascertain a match. This will slow down operations where large volumes of data are involved.
+An index is used to find all the rows that match with specific columns and then skim through these specific data subsets to find a match.
+
+
+What is a foreign key?
+A foreign key can be defined as a set of attributes or an attribute that provides a reference to a primary key within another table. In other words, a foreign key links two tables together. 
+
+
+What is the difference between a Unique key and a Primary key?
+Both the primary and unique keys have unique values, but there are two main differences between them.
+* A primary key cannot have null values, while a unique key can.
+* In a table, you can have multiple unique keys, but no more than one primary key.
+
+
+What is a unique key?
+A key that accepts only null values and cannot process or accept a duplicate value is known as a unique key. The purpose of having a unique key is to ensure that every row and column is unique.
+
+What is a primary key?
+The main objective of a primary key is uniquely identifying all the table records present. There can be no null values and there must be unique values. One table can have a maximum of one primary key, consisting of either single or multiple fields.
+ 
+
+What is meant by field and table in SQL?
+Organised data and information stored in the form of columns and rows is called a table. Rows are referred to as tuples and columns as attributes.
+The total number of columns made within a table is known as a field. In a database record, a field represents attributes and characteristics. 
+
+What are default constraints?
+A constraint is used for specifying a set of rules that help to process data and limit the kind of data that will go in a table. A default constraint’s main purpose is to establish a default value in a column so that it can be added to any new record where no value has been specified.
+
+What are the applications of SQL?
+SQL databases can be used to perform several operations. This includes
+* Creation of new databases
+* Insertion of new data
+* Deleting existing data
+* Record updates
+* Data retrieval
+* Dropping and creating tables
+* Creation of functions and views
+* Conversion of data types
+
+
+Describe the different database management system types.
+There are four main types of database management systems. 
+1. Hierarchical Database: This database is structured like a tree and data is stored in a hierarchy. To understand this better, a parent structure can have many things, but a child structure can have just one parent.
+2. Network Database: This database is structured like a graph where different points can all be related. It allows a single child structure to have multiple relationships.
+3. Relational Database: This database is structured like a table. The values given through the rows and columns are closely related to each other. Relational databases are easy to understand and use, making them the most widely used databases.
+4. Object-oriented Database: Data values and operations are structured as objects in this database. Each of the objects has multiple relationships amongst themselves.
+
+
+What are the different types of commands for SQL?
+The different SQL commands to be learned are:
+ 
+1. DDL or Data Definition Language: DDL helps to define the database’s data structure during the starting stage before the database is created. Its main purpose is creating and restructuring database objects. The commands within DDL are
+* Create table
+* Drop table
+* Alter table
+2. DML or Data Manipulation Language: DML manipulates existing data within a database. In other words, it allows users to retrieve and manipulate this data. DML is used while performing operations like adding data to the database using the ‘Insert’ command, keeping data up-to-date with the ‘Update’ command and removing data from databases with the ‘Delete’ command. 
+ 
+3. DCL or Data Control Language: DCL essentially controls or restricts access to data within a database. The DCL subsets are most often used for creating objects that are related to user access as well as controlling privilege distribution in authorised users. The ‘Grant’ and ‘Revoke’ commands are used in DCL.
+ 
+4. TCL or Transaction Control Language: TCL commands help in controlling the changes that DML commands make. They also authorise statements regarding assembling in conjunction into transactions. ‘Commit’, ‘Rollback’, ‘Savepoint’, ‘Begin’ and ‘Transaction’ are the commands used in TCL.
+
+
+What is SQL?
+SQL is short for Structured Query Language, with the primary purpose of interacting with databases. SQL is the default query language that is used in communicating with RDBMS (Relational Database Management Systems) and also for carrying out various operations on different data types that are related to data manipulation. To sum up, SQL is a database language required to make or delete databases, while it can also fetch or modify table rows among other things.
+

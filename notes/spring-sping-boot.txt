@@ -1,0 +1,373 @@
+Spring
+
+
+Spring Core
+
+Introduction:
+Spring is a dependency injection framework to make java application loosely coupled.
+Spring framework makes easy development of Java EE application.
+Made by Rod Johnson in 2003g
+
+
+
+Spring IoC Container
+- It is the component of a spring which is responsible to create objects to hold them and to inject them wherever needed.
+- It defines the life cycle of Objects from creation to destruction.
+- We have to give it information of:
+    - Beans: Which POJO classes it has to manage.
+    - Config: dependency of bean is dependent on whom.
+- Application code will use these beans and config to execute.
+
+
+Application Context
+- It represents IoC container.
+- It is the tool that implements the idea of IoC.
+- ClassPathXMPApplicationContext, AnnotationConfigApplicationContext, FileSystemXMLApplicationContext.
+
+Bean Factory
+- It is the implementation of spring IoC container.
+- It is the older version of application context.
+
+
+Dependency Injection:
+- It is a design pattern by which application is made.
+- It is a type of mechanism where an object of a class is made and given to a class who needs that object for its processing. This is done on runtime.
+- It is the injection of an object in a class where that objet is needed.
+- And this process is called inversion of control (leaving our control from the code and giving it to spring). -> IOC.
+
+Two ways of dependency injection:
+	- Setter injection: uses setter method to set values while creating object.
+	- Construction Injection: uses constructors to set values while creating objects.
+
+
+Configuration File: this is the information XML file of the POGO object provide to IoC container also called as beans, and its dependencies.
+
+
+Life cycle of Java Bean object
+
+- Loading bean definition from java file or xml file or annotation (configuration)
+- Bean Instantiation
+- Bean Initialisation, with the values provided in configuration.
+- Use Bean, using ApplicationContext.getBean()
+- Bean Destruction. Using destroy()
+
+
+
+Spring MVC
+
+
+Design Pattern: 
+- It is the reusable solutions to common design problems which enhances code structure, scalability and maintainability.
+- Ex: Singleton design pattern, Factory Method design pattern, DAO design pattern, MVC design pattern.
+
+
+MVC Design pattern
+- It is the design pattern used to create web application in three layers
+    - Model: used to store data
+    - View: Presentation layer or frontend
+    - Controller: Used for backend.
+
+Spring Web MVC is a specific module of spring which helps to create web applications using MVC design pattern.
+
+- Request sent by client goes to dispatcher servlet which is also know as front controller
+- Dispatcher servlet goes to handler mapping to resolve which controller is to be called.
+- Once mapping is resolved, controller handles all the business logic  with the help of service and repository.
+- Controller return the model(data) view(UI name) object to dispatcher servlet. 
+- Dispachter servlet uses view resolver to resolve the view. It gets the proper physical location of the view, and return to Dispachter servlet.
+- Then dispatcher servlet calls view to get the view(UI) that is to be shown to client and send response back to client.
+
+￼
+
+
+* Model: The Model encapsulates the application data.
+* View: The View renders the model data and generates HTML output that the client's browser can interpret.
+* Controller: The Controller processes the user requests and passes them to the view for rendering.
+
+
+Dispatcher Servlet
+* Acts as the Front Controller for all HTTP requests.
+* Determines the appropriate controller to handle a request.
+* Dispatches the request to the selected controller.
+* Resolves the view using the View Resolver and renders the response.
+* DispatcherServlet intercepts incoming requests.
+* Retrieves the handler mapping and forwards the request to the controller.
+* The controller processes the request and returns a ModelAndView object.
+* DispatcherServlet uses the view resolver to render the appropriate view.
+
+
+
+
+Spring JDBC(JAVA DataBase Connection)
+- Spring JDBC is used to connect spring application with database.
+- This module internally use JDBC API.
+- Spring JDBC Framework takes care of all the low-level details starting from opening the connection, preparing and executing the SQL statement, processing exceptions, handling transactions, and finally closing the connection. 
+- DriverManagerDataSource:
+    - It is the implemented class of DataSource
+    - It is present in Javax.sql package.
+    - Database Config: It is use to setup database configuration
+    - Load Driver: It is used to load database drivers
+    - Establish connections: It is used to create connection between spring application and database.
+- JDBCTemplate:
+    - It is used to perform CRUD operations on database
+    - update() -> insert, update, delete.
+    - query() -> select
+
+
+ORM
+-  Object relational mapping, it is the mapping between the database table and DAO in java code.
+- No need to change everywhere in case of any entity change.
+- It can auto adapt and run migrations.
+- ORM manages sessions and transactions automatically.
+
+
+Hibernate:
+- It is the ORM tool, used in spring which maps java code objects with database.
+- Reduces efforts of writing query.
+- Entity is the java class mapped to database
+- Session factory: it is the component that manages database connections.
+
+
+
+JPA(Java/Jakarta Persistence API):
+- It provides standard set of annotations, set of rules and tool used with hibernate to talk to data base.
+- It helps us create database tables from java object.
+- Hibernate creates the mapping and JPA tell how to create the mapping.
+
+
+
+Spring Data JPA
+- It is an abstract layer working on top of JPA to reduce boiler plate code required to implement DAO
+- JPQL(Jarkata persistence Query language ): It is database-independent and works on entities, allowing queries to remain portable across different databases.
+- These are the queries written over entities of java code.
+- It is an object oriented query language.
+- This is converted to sql by hibernate.
+- Native Queries(SQL): These are pure sql queries
+- These are the queries written  over db tables.
+- It is database oriented query language.
+- 
+
+	
+
+
+
+
+
+
+
+Spring Boot
+
+- It is an open source java framework written over spring framework.
+- Spring Boot refers to fast development of spring application
+- Core principles of spring boot are as follows:
+- Opinionated default: This refers to pre configured settings and behaviours designed to simplify development by providing sensible defaults.
+    - Maven/Gradle setup
+    - Dependencies
+    - Project structure
+- Convention over configuration: This means that if we follow certain established patterns or conventions we can achieve a lot without needing to explicitly configure everything.
+- Auto configuration: 
+    - All the configuration are automatically provided by spring boot like, configuring dispacther servlet, configuring views and handler mapping.
+    - Based on dependencies provided, It will get all the configuration automatically, and load it into application.
+- Embedded Servers: pre embedded servers in spring boot like tomcat.
+- Uses of spring boot:
+    - Develop web app
+    - Restful web services
+    - Microservcie
+    - Batch processing 
+    - Integration with other technologies is easy
+    - Testing 
+    - Monitoring and management
+
+
+Spring Boot Starters
+- It is the “Dependency descriptors”
+- Dependency: External libraries or JARs
+- Descriptors: Configuration specifying  JARs and there versions
+- It manages and tell application what are the dependencies added, what will be the configurations required for these dependencies and there version compatibilities with other modules. Ex: spring-boot-starter-web
+- Uses:
+    - It simplifies the confirguration
+    - Boost productivity by providing sensible defaults and cofigurations, allowing developers to focus on writing business logic.
+    - It ensures configuration compatibility
+- Spring-boot-starters -> auto configuration, logging, yaml processing
+- Spring-boot-starter-web -> It provides dependencies to build web applications, spring mvc, restful series, embedded tomcat.
+- Spring-boot-starter-data-jpa -> spring data jpg, jdbc, hibernate, connection pool
+- Spring-boot-starter-test -> jUnit, mocikto
+- Spring-boot-starter-actuator -> application health check, monitoring
+
+
+Bean
+- A bean is an object which is created, configured and managed by spring IoC Container
+- Type of a bean can be given by @Scope(“prototype”)
+- Different types of bean scope:
+    - Singleton Scope: this is the bean which is created once per spring container.
+        - This is shared across the entire application.
+        - Created at application startup
+        - This is usually used for services, controllers and repositories.
+        - This is a default type.
+    - Prototype Scope: It creates new bean every time it is requested
+        - Spring creates but does not manage its life cycle, hence it should be destroyed manually.
+    - Request Scope: It is created once per HTTP request.
+        - This is mainly used for web applications
+        - This is automatically destroyed when request ends.
+    - Session scope: This is created once per HTTP session
+        - Destroyed when session ends.
+- Eager Initialisation: Bean is created at application startup time.
+    - This is the default behaviour.
+    - Slower application startup time.
+    - Throws error at application startup.
+- Lazy Initialisation: Bean is created when it is requested for the first time.
+    - Slower response for first request.
+    - Faster application startup time.
+    - Throws error when executed.
+
+
+
+
+Spring Boot application startup flow
+- It executes main() methods and starts the Spring application
+- Internally spring boot decides which application type it is: servlet, reactive, non web and loads ApplicationContextInitializer
+- Spring boot prepares environment by loading properties from application.yml, OS environment variables JVM system properties.
+- Spring boot banner is printed.
+- @SpringBootApplciation is processed which expands to @Configuration, @ComponentScan, @EnableAutoConfiguration
+- Then these annotations: loads configuration and apply them, scans qpackages and create and initialize beans, and dependency injection.
+- Embedded  server is started
+- Application is ready
+
+
+
+
+
+Spring boot annotations
+- @SpringBootApplication - this is the combination of three annotations -> @Configuration, @ComponentScan, @EnableAutoConfiguration
+- It is typically used to mark the main class of the spring boot application
+- @Configuration - this annotation indicates that a class declares one or more @Beans
+    - This class will provide bean definitions for the application context. 
+    - This annotations are used on class.
+- @Bean - this annotation inside @Configuration tells spring how to create an object of these methods during startups.
+    - This registers there bean objects for later use.
+    - These methods are called at startup
+- @ComponentScan: this annotation helps to scan the packages, by default it scans the base package of the application.
+    - It scans all the classes annoyed with @Component, @Service, @Repository, @Controller….
+- @EnableAutoConfiguration: Automatically configures beans based on class path, properties and existing beans without manual configuration.
+
+
+
+
+
+@Autowired
+- This tells  spring to inject the required dependencies automatically
+- It works by identifying type first and then name.
+- Costructor injection is recommened
+@Qualifier
+- This is used when multiple beans of same time exists in an application, so this is used to resolve ambiguity
+@Primary
+- This marks the bean as default bean when multiple beans of same type exists in an application
+- When used you dont need to specify qualifier everywhere.
+@Component
+- This is the generic stereo type which marks class as a spring managed bean
+@Service @controller @Repository
+- These are the specialisation of @Component which specialises in writing business logic, used to receive request, and used in data access layer respectively.
+@Configuration
+- This marks class as configuration class and can contain multiple bean
+@Controller
+- This tell that this class is responsible for accepting request and can return both data and views.
+@RestController
+- This contains of @Controller and @ResponseBody,
+- @Controller tells spring this is the class that recieves request
+- @ResponseBody tells spring that this method sends back response data not views.
+    - It returns JSON/XML, uses HttpMessageConverter and return back to client.
+    - This writes return value directly in HTTP response body
+    - Skips view resolution
+@RequestMapping
+- Maps HTTP request to controller method. 
+- This can be used on class as well as methods
+- This maintains the mapping and tell dispatcher servlet about the handler mapping.
+@GetMapping @Postmapping @PutMapping @DeleteMapping
+- These are all different annotation which handles different http method in application. 
+@RequestBody
+- This is the annotation used on the request object that is to be received on that controller.
+- It uses HttpMessageConverter and converts JSON object to  java object.
+@RequestParam
+- This is the annotation used when there are any request parameters passed from the request
+@PathVariable
+- This is the annotation used to access the dynamic value of end point the request path has.
+@RequestHeader
+- This is to access the header part of the request
+
+
+Bean Validation
+- It is the declarative way to validate request body.
+- We can use @NotNull, @NotBlank, @Size, @Min, @Max, @Pattern, @Email etc. annotation in request body above fields
+- This uses hibernate validator as a default implementation to validate this request.
+- @Valid annotation is must in controller method on request body to make sure this works.
+- This annotation  triggers the bean validation.
+- @Validated this is used for group validation.
+
+
+Repository
+- A repository is a abstraction over the data access layer:
+    - It eliminates boilerplate DAO code
+    - Provides ready made CURD operations
+    - Generous at runtime
+- Types of repository
+- CrudRepository
+    - It provides basic CRUD operation
+    - save(), findById(), findAll(), deleteById()
+    - No pagination/sorting support
+- JpaRepository
+    - It extends CrudRepository
+    - Provides batch operations
+    - Pagination and sorting support
+    - Provides derived query methods like findByEmail(), findByUsernameAndStatus() etc.
+    - Spring parses these method name and convert them into JPQL
+
+N+1 Problem
+- In this problem if there is one to many relationship in database tables, to fetch N records there are N+1 queries.
+- This is the issue from hibernate.
+- It is a performance issue.
+- This happens in case of lazy loading
+
+
+Entity Vs Table
+- Tabel is database concept 
+- Entity is a JPA concept this represent table in java code
+- @Entity -> this marks the JPA entity, required by hibernate for mapping.
+- @Id -> this marks the primary key, entity must have exactly one @Id
+- @GeneratedValues -> tell JPA to generate primary key valuse.
+    - There are different strategies to generate ID
+    - INDENTITY: db auto increment
+    - SEQUENCE: uses db sequence
+    - AUTO: JPA decides
+    - 
+- @OneToMany and @ManyToOne these are the relationship between entities
+- Lazy fetch: Data is fetched when data is accessed
+    - Uses proxy objects
+- Eager fetch: data is fetched immediately
+
+
+Spring Batch
+- This is the module of the spring which enables you to process data in huge amount and with high speed.
+- Chunk processing: It breaks down the huge data set in chunks and process it in chunks.
+- Schedule Execution: It enables us to schedule execution time of the batch.
+- Error handling and retry: when a chunk is processed it is processed in different steps.
+    - If any step fails it can be retried or skipped.
+- Restartability: If job jails it can be restarted from scratch
+- Job Monitoring: with its built in job repository spring batch keeps the track of all the status pf the batch. 
+
+Spring Batch Architechture
+- Job Launcher: it is an Interface provided by spring which help us to trigger a job.
+- Job: it is the sequence of step which you wanted to achieve of certain process.
+    - It is the batch application which is booted up in kubernetese whenever it is scheduled and it terminates automatically when the task is achived.
+    - It has its jobInstanct and JobExecution.
+- Step: It is the independent sequential phase of a batch job.
+    - A job has one or more steps.
+    - Every step has 3 components
+        - ItemReader : this will read the data from datasource.
+        - ItemProcessor: this will process the data read from the datasource or perform action on it.
+        - ItemWritter: It will write the processed data wherever needed.
+- JobRepository: It is the repository which will maintain all the details of job.
+    - It is and audit log which is handled by spring itself.
+
+
+
+
+
