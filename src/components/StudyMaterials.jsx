@@ -39,29 +39,33 @@ const StudyMaterials = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
-          >
-            <FaArrowLeft className="text-sm" />
-            <span className="hidden sm:inline">Back to Portfolio</span>
-          </button>
+          <div className="w-20 flex justify-start">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
+            >
+              <FaArrowLeft className="text-sm" />
+              <span className="hidden sm:inline">Back</span>
+            </button>
+          </div>
 
           <div className="flex items-center gap-2 text-xl font-bold bg-gradient-to-r from-primary-700 to-primary-500 dark:from-primary-400 dark:to-primary-300 bg-clip-text text-transparent font-display">
             <FaBookOpen className="text-primary-600 dark:text-primary-400" />
             <span>Study Materials</span>
           </div>
 
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700"
-          >
-            {darkMode ? (
-              <FaSun className="text-yellow-500" />
-            ) : (
-              <FaMoon className="text-gray-700" />
-            )}
-          </button>
+          <div className="w-20 flex justify-end">
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700"
+            >
+              {darkMode ? (
+                <FaSun className="text-yellow-500" />
+              ) : (
+                <FaMoon className="text-gray-700" />
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -77,8 +81,8 @@ const StudyMaterials = () => {
                   key={subject.id}
                   onClick={() => setActiveTab(subject.id)}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200 ${isActive
-                      ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/25 scale-[1.02]'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
+                    ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/25 scale-[1.02]'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
                     }`}
                 >
                   <Icon className={isActive ? 'text-white' : 'text-primary-500 dark:text-primary-400'} />

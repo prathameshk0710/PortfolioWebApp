@@ -53,7 +53,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Portfolio />} />
-      <Route path="/study-materials" element={<StudyMaterials />} />
+      <Route path="/notes" element={<StudyMaterials />} />
     </Routes>
   )
 }
