@@ -1,157 +1,94 @@
 # Portfolio Web Application
 
-A modern, responsive portfolio website built with React, Vite, and Tailwind CSS. Showcasing professional experience, projects, education, and skills.
+A modern, responsive portfolio website built with **React**, **Vite**, and **Tailwind CSS**.
 
 ## Features
 
-- 🎨 Modern and beautiful UI design
 - 🌙 Dark mode support
-- 📱 Fully responsive design
+- 📱 Fully responsive (mobile, tablet, desktop)
 - ⚡ Fast performance with Vite
 - 🎭 Smooth animations with Framer Motion
-- 📧 Contact form
+- 📧 Contact form with EmailJS
 - 🔗 Social media integration
 
-## Sections
+## Tech Stack
 
-- **Hero**: Introduction with social links
-- **About**: Personal information and journey
-- **Education**: Academic background
-- **Experience**: Work experience timeline
-- **Tech Stack**: Technologies and skills
-- **Projects**: Portfolio projects showcase
-- **Contact**: Contact form and information
+- React 18 — UI framework
+- Vite — build tool & dev server
+- Tailwind CSS — utility-first styling
+- Framer Motion — animations
+- React Router DOM — client-side routing
+- React Icons — icon library
 
 ## Getting Started
 
-### ⚠️ Prerequisites
-
-**Node.js must be installed first!**
-
-- **Node.js** (v16 or higher) - [Download LTS version here](https://nodejs.org/)
-- **npm** (comes with Node.js automatically)
-
-> **Don't have Node.js?** See [INSTALL_NODEJS.md](./INSTALL_NODEJS.md) for step-by-step installation guide.
-
-### 🚀 Quick Start (3 Steps)
-
-**Option 1: Automated Script (Easiest)**
-1. Double-click `install-and-run.bat` (Windows)
-   - OR run `.\install-and-run.ps1` in PowerShell
-2. Wait for dependencies to install
-3. Browser will open automatically at `http://localhost:5173`
-
-**Option 2: Manual Commands**
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-
-3. **Open your browser:**
-   Navigate to `http://localhost:5173`
-
-### 📦 What Gets Installed
-
-When you run `npm install`, these will be installed:
-- React 18.2.0
-- Vite 5.0.8
-- Tailwind CSS 3.4.0
-- Framer Motion 10.16.16
-- React Icons 4.12.0
-
-### 🛠️ Available Commands
+**Prerequisites:** [Node.js](https://nodejs.org/) v16+ (includes npm).
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run preview  # Preview production build
+npm install        # install dependencies
+npm run dev        # start dev server → http://localhost:5173
+npm run build      # production build → dist/
+npm run preview    # preview production build
 ```
-
-> **Note**: If `npm` command is not recognized, install Node.js first and restart your terminal. See [START_HERE.md](./START_HERE.md) for quick start guide.
-
-## Customization
-
-All personal data is centralized in the `src/constants/` directory for easy updates:
-
-### Update Personal Information
-
-Edit `src/constants/personalInfo.js`:
-- Name, title, bio
-- Email, phone, location
-- Statistics
-
-### Update Social Media Links
-
-Edit `src/constants/socialLinks.js`:
-- Add/remove social platforms
-- Update URLs
-
-### Update Education
-
-Edit `src/constants/education.js`:
-- Add your educational background
-- Update degrees, institutions, years
-
-### Update Work Experience
-
-Edit `src/constants/experience.js`:
-- Add your work history
-- Update job titles, companies, descriptions
-
-### Update Projects
-
-Edit `src/constants/projects.js`:
-- Add your portfolio projects
-- Update descriptions, technologies, links
-
-### Update Tech Stack
-
-Edit `src/constants/techStack.js`:
-- Add/remove technologies
-- Organize by categories
-
-> **Tip**: See [DEVELOPMENT.md](./DEVELOPMENT.md) for detailed customization guide.
-
-## Technologies Used
-
-- React 18
-- Vite
-- Tailwind CSS
-- Framer Motion
-- React Icons
 
 ## Project Structure
 
 ```
 src/
-├── components/     # React components
-├── constants/      # Static data (personal info, projects, etc.)
-├── hooks/          # Custom React hooks
-├── utils/          # Utility functions
-└── config/         # Configuration files
+├── components/          # React components (Hero, About, Projects, StudyMaterials, etc.)
+│   └── common/          # Reusable components (Card, SectionTitle, SocialIcon)
+├── constants/           # Static data
+│   ├── notes/           # Subject-wise JSON notes (java, oops, os, dbms, spring, etc.)
+│   ├── personalInfo.js
+│   ├── socialLinks.js
+│   ├── education.js
+│   ├── experience.js
+│   ├── projects.js
+│   ├── techStack.js
+│   └── studyMaterials.js
+├── hooks/               # Custom hooks (useScrollAnimation)
+├── utils/               # Animations, formatters, validators
+├── config/              # Theme configuration
+├── App.jsx              # Routes & main layout
+├── main.jsx             # Entry point
+└── index.css            # Global styles
+public/
+├── study-materials/     # Images for study notes
+├── 404.html             # SPA fallback for GitHub Pages
+└── favicon.ico
 ```
 
-See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for detailed structure documentation.
+## Customization
 
-## Documentation
+All personal data lives in `src/constants/` — edit these files without touching components:
 
-- [SETUP.md](./SETUP.md) - Detailed setup instructions
-- [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) - Directory structure guide
-- [DEVELOPMENT.md](./DEVELOPMENT.md) - Development guidelines
+| File | Content |
+|------|---------|
+| `personalInfo.js` | Name, title, bio, contact, stats |
+| `socialLinks.js` | Social media platforms & URLs |
+| `education.js` | Degrees, institutions, years |
+| `experience.js` | Job titles, companies, descriptions |
+| `projects.js` | Portfolio projects, tech, links |
+| `techStack.js` | Technologies organized by category |
+
+## Design Reference
+
+### Color Palette
+- **Primary:** Blue scale (700 `#1d4ed8` → 400 `#60a5fa`)
+- **Light mode:** white / gray-50 backgrounds, gray-900 text
+- **Dark mode:** gray-950 backgrounds, gray-50 text
+- All combinations meet WCAG AA contrast standards
+
+### Typography
+- **Headings:** Poppins (display font) — tight line-height, negative letter-spacing
+- **Body:** Inter — relaxed line-height (1.75) for readability
+- Responsive sizes using Tailwind breakpoints (base → md → lg)
+
+## Deployment
+
+Configured for **GitHub Pages** with SPA fallback (`public/404.html` handles client-side routing).
 
 ## License
 
-This project is open source and available under the MIT License.
-
-## Contact
-
-Prathamesh Kondawale
-- Email: prathamesh.kondawale@email.com
-- LinkedIn: [LinkedIn Profile](https://www.linkedin.com/in/prathamesh-kondawale)
-- GitHub: [GitHub Profile](https://github.com/prathamesh-kondawale)
+MIT
 
