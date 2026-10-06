@@ -79,7 +79,10 @@ const StudyMaterials = () => {
               return (
                 <button
                   key={subject.id}
-                  onClick={() => setActiveTab(subject.id)}
+                  onClick={() => {
+                    setActiveTab(subject.id)
+                    window.scrollTo({ top: 0, behavior: 'instant' })
+                  }}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200 ${isActive
                     ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/25 scale-[1.02]'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
@@ -96,14 +99,14 @@ const StudyMaterials = () => {
 
       {/* Content Area */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           {activeSubject && (
             <motion.div
               key={activeSubject.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
             >
               {/* Subject Header */}
               <div className="mb-8 sm:mb-10">
@@ -134,9 +137,9 @@ const TopicCard = ({ topic, index }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.1 }}
+      transition={{ duration: 0.3, delay: index * 0.03 }}
       className="group relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
     >
       {/* Left accent bar */}
@@ -168,7 +171,15 @@ const TopicCard = ({ topic, index }) => {
                 key={i}
                 className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line mb-3 last:mb-0"
               >
-                {para}
+                {para.split(/(\*\*.*?\*\*)/).map((segment, j) =>
+                  segment.startsWith('**') && segment.endsWith('**') ? (
+                    <strong key={j} className="text-gray-900 dark:text-gray-100 font-semibold">
+                      {segment.slice(2, -2)}
+                    </strong>
+                  ) : (
+                    <span key={j}>{segment}</span>
+                  )
+                )}
               </p>
             ))}
           </div>

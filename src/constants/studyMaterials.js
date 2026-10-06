@@ -1,4 +1,4 @@
-import { FaCode, FaServer, FaDatabase, FaNetworkWired, FaJava, FaCubes, FaLeaf } from 'react-icons/fa'
+import { FaCode, FaServer, FaDatabase, FaNetworkWired, FaJava, FaCubes, FaLeaf, FaClock } from 'react-icons/fa'
 import javaTopics from './notes/java.json'
 import oopsTopics from './notes/oops.json'
 import dsaTopics from './notes/dsa.json'
@@ -6,6 +6,7 @@ import osTopics from './notes/os.json'
 import dbmsTopics from './notes/dbms.json'
 import cnTopics from './notes/cn.json'
 import springTopics from './notes/spring.json'
+import temporalTopics from './notes/temporal.json'
 
 export const studyMaterials = [
   {
@@ -37,5 +38,11 @@ export const studyMaterials = [
     name: 'Spring & Spring Boot',
     icon: FaLeaf,
     topics: springTopics,
+  },
+  {
+    id: 'temporal',
+    name: 'Temporal',
+    icon: FaClock,
+    topics: temporalTopics,
   },
 ]
