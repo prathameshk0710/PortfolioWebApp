@@ -1,0 +1,464 @@
+TEMPORAL — INTERVIEW NOTES
+==========================
+Focus: Temporal concepts discussed for a Backend Engineer / Temporal interview.
+Examples use Java where useful, with a few Go SDK references.
+
+1. WHAT IS TEMPORAL?
+--------------------
+Temporal is a durable workflow orchestration platform. It lets application code coordinate
+long-running business processes while preserving their progress through worker restarts,
+process crashes, and transient failures.
+
+Core mental model:
+- Temporal Server coordinates execution and persists workflow event history.
+- Workers run your application code.
+- Workflow code defines decisions and orchestration.
+- Activity code performs external or non-deterministic work.
+- Task queues route Workflow Tasks and Activity Tasks to compatible workers.
+- Persisted history, not worker memory, is the source of truth for workflow progress.
+
+A workflow can last seconds, hours, days, or weeks. A 30-day workflow does NOT require one
+worker thread to remain occupied for 30 days.
+
+2. WORKFLOW VS ACTIVITY
+-----------------------
+Workflow:
+- Defines business-process orchestration and decisions.
+- Must be deterministic because Temporal may replay its code.
+- Uses Temporal workflow APIs for timers, workflow time, and workflow-safe concurrency.
+- Schedules Activities and can wait for timers, signals, or results.
+- A Workflow Execution is not the same thing as a Workflow Task. One long-running workflow
+  may execute many Workflow Tasks over its lifetime.
+
+Activity:
+- Performs external side effects or non-deterministic work, such as database calls,
+  HTTP/API calls, payment operations, or file processing.
+- Can use normal I/O and business logic.
+- May be retried, so side effects should be idempotent.
+- Completed Activity results are recorded in history. Workflow replay reuses the recorded
+  result instead of re-running the completed Activity.
+
+Important distinction:
+- Workflow code = decisions and orchestration.
+- Activity code = actual external work.
+
+3. WHAT HAPPENS WHEN .execute() OR .start() IS CALLED?
+-----------------------------------------------------
+At a high level:
+- The client sends a request to Temporal Server to start a Workflow Execution.
+- Temporal persists the workflow start/history information and schedules work.
+- A worker polls the workflow task queue and receives a Workflow Task.
+- The worker executes workflow code and reports commands/results to Temporal.
+- Activities are scheduled as needed; Activity Workers execute them and report results.
+- The workflow continues as more tasks, timers, signals, and activity results arrive.
+
+In Java, synchronous WorkflowClient calls that wait for a result can block the calling
+application thread while waiting for the workflow result. The workflow itself is not tied
+to that client thread. A start-style call returns after starting the execution, without
+waiting for the entire business process to finish.
+
+4. RPC
+------
+RPC means Remote Procedure Call: one process asks another process to perform an operation
+over a network, using a defined protocol/API. Temporal clients and workers communicate with
+Temporal Server through RPC. The caller may wait for a response, depending on the operation.
+
+5. WORKFLOW TASK VS ACTIVITY TASK
+---------------------------------
+Workflow Task:
+- Asks a worker to run/replay workflow code and determine the next commands.
+- Common work: evaluate conditions, schedule activities, process signals, set timers.
+- Deterministic and replayable.
+
+Activity Task:
+- Asks a worker to execute an Activity.
+- Common work: database queries, HTTP requests, payment API calls, file operations.
+- May have external side effects and can be retried.
+
+A workflow may run a Workflow Task, schedule an Activity Task, wait for the Activity result,
+then run another Workflow Task.
+
+6. WORKFLOW HISTORY AND REPLAY
+------------------------------
+Temporal persists an event history for each workflow execution. History can contain events
+such as workflow started, activity scheduled/started/completed, timer started/fired, and
+signals received.
+
+Replay:
+- A worker re-executes Workflow code against the recorded history to reconstruct workflow
+  state and check that the code produces compatible commands.
+- Replay is important after worker failure, cache miss, or when a worker that does not have
+  the workflow cached receives the task.
+- Completed Activities are not re-executed just because the Workflow code is replayed;
+  their recorded results are used.
+- Workflow code must make compatible decisions during replay.
+
+Replay does not mean that Temporal blindly re-runs all external side effects.
+
+7. DETERMINISM AND NON-DETERMINISM
+----------------------------------
+A Workflow must make the same decisions when replayed against the same history.
+
+Risky sources inside Workflow code:
+- Direct system clock calls, such as System.currentTimeMillis() or time.Now().
+- Normal timers/sleeps, such as Thread.sleep() or time.Sleep().
+- Random values that are not recorded or produced using a supported deterministic method.
+- External network calls, database reads, or side effects directly inside Workflow code.
+- Changes in control flow that cause a different sequence of Temporal commands.
+- Depending on unstable iteration order or uncontrolled concurrency where it changes commands.
+
+Use Temporal workflow APIs:
+- Java: Workflow.currentTimeMillis(), Workflow.sleep(...), Workflow.getVersion(...).
+- Go: workflow.Now(ctx), workflow.Sleep(ctx, ...), workflow.GetVersion(...).
+- Put external I/O and side effects into Activities.
+- In Go, use Temporal workflow concurrency primitives such as workflow.Go rather than
+  ordinary goroutines for workflow-controlled concurrency.
+- If a non-deterministic value must be generated as part of Workflow logic, use the
+  appropriate SDK-supported mechanism (for example, Go SDK SideEffect) and understand
+  its semantics.
+
+A non-determinism error generally means replayed code emits commands that do not match the
+recorded history. Do not ignore it or terminate executions as the first response. Identify
+the affected histories and code change, restore compatibility, and use versioning where
+appropriate.
+
+8. CHANGING WORKFLOW CODE / VERSIONING
+--------------------------------------
+Problem:
+- A workflow starts under V1 and may still be running days or weeks later.
+- A new worker deployment contains V2.
+- If V2 changes the sequence of commands expected during replay, old histories may no
+  longer be compatible.
+
+Example:
+V1:
+  activityA()
+  activityB()
+
+V2:
+  activityA()
+  activityC()  // new command
+  activityB()
+
+An old history may not be compatible with this new sequence without a versioning strategy.
+
+Java Workflow versioning:
+  int version = Workflow.getVersion(
+      "add-activity-c",
+      Workflow.DEFAULT_VERSION,
+      1
+  );
+
+  activityA();
+
+  if (version >= 1) {
+      activityC();
+  }
+
+  activityB();
+
+Concept:
+- Temporal records the version decision in workflow history.
+- On replay, the workflow uses the recorded version decision.
+- New executions can use the new behavior, while older histories retain the old path.
+- Exact safe placement of version checks depends on the change and the histories that may
+  already exist.
+
+Important:
+- Temporal provides versioning APIs, but does not automatically make arbitrary Workflow
+  code changes backward-compatible. Developers must identify and guard incompatible changes.
+- Keep old paths while relevant executions may need them.
+- Test replay against representative histories before rollout.
+- Do not blindly deploy incompatible workflow code to all workers.
+- For very long-running workflows, old executions may still exist when new code is deployed.
+
+9. WORKFLOW VERSIONING VS WORKER VERSIONING
+-------------------------------------------
+Workflow code versioning (e.g., Workflow.getVersion / GetVersion):
+- Helps make changes to workflow orchestration compatible with existing histories.
+- Records a version decision in workflow history.
+- Addresses workflow determinism and command-sequence compatibility.
+
+Worker Versioning / Worker Deployments:
+- Deployment/routing mechanism for controlling which worker code version executes work.
+- Can help roll out code and keep executions on compatible worker versions, depending on
+  the selected deployment/versioning behavior and configuration.
+- It is separate from Workflow.getVersion.
+- Do not treat Worker Versioning as an automatic replacement for workflow code compatibility.
+
+10. ACTIVITY CODE CHANGES AND ACTIVITY VERSIONING
+-------------------------------------------------
+Temporal does not have a general Activity-version API directly analogous to Workflow.getVersion.
+
+If an Activity has completed:
+- Its result is in workflow history.
+- Workflow replay does not execute that completed Activity again.
+
+If an Activity has not executed yet:
+- It will normally execute the implementation available on the worker that receives the
+  Activity Task.
+- Temporal does not automatically preserve the old Activity business logic just because
+  the workflow started before the deployment.
+- Therefore, an old workflow may run new Activity business logic.
+
+If Activity behavior must be controlled:
+- Keep distinct activity types/implementations (e.g., ActivityB_V1 and ActivityB_V2) and
+  have workflow logic choose appropriately, OR
+- Use suitable Worker Versioning / Deployment Version routing where appropriate.
+- Make Activities idempotent and carefully manage compatibility for retries and external
+  side effects.
+
+Interview distinction:
+- Workflow versioning primarily addresses deterministic replay compatibility.
+- Activity implementation versioning is generally an application/deployment compatibility
+  concern.
+
+11. STICKY SCHEDULING
+---------------------
+Sticky scheduling is a performance optimization. Temporal prefers sending subsequent
+Workflow Tasks to the same worker that previously handled the workflow, so that the worker
+can reuse cached workflow state and reduce replay work.
+
+If the worker crashes, restarts, loses its cache, or is unavailable:
+- Sticky scheduling is not a guarantee that the workflow stays on that worker.
+- Another worker can receive the Workflow Task.
+- That worker reconstructs workflow state by replaying persisted history.
+
+Remember:
+- Sticky scheduling is not required for correctness.
+- Temporal's persisted history is the source of truth.
+- Sticky execution reduces replay overhead; it does not permanently assign a workflow
+  to one worker.
+
+12. TASK QUEUES
+---------------
+A task queue is a logical routing mechanism for delivering Workflow Tasks or Activity Tasks
+to compatible workers.
+
+- Workers poll task queues for tasks.
+- Multiple worker instances can poll the same task queue.
+- Separate queues can isolate workloads and enable independent scaling/configuration.
+- A task queue is not the same thing as a worker or a physical queue server.
+- A task queue belongs to a Namespace.
+
+13. WORKER REPLICAS, POLLERS, AND CONCURRENCY
+---------------------------------------------
+Worker replica:
+- An instance/process/pod running a Temporal Worker.
+- Adding replicas is horizontal scaling.
+
+Poller:
+- A worker-side component that requests tasks from Temporal Server.
+- Pollers fetch work; they are not the same as task execution slots.
+
+Concurrency:
+- Controls how many tasks a worker can execute simultaneously.
+- Workflow Task and Activity Task execution have separate controls.
+- More pollers do not automatically mean more execution capacity.
+- More replicas increase capacity only if workers are the bottleneck and downstream systems
+  can handle the added load.
+
+Go SDK example for Activity concurrency:
+  worker.Options{
+      MaxConcurrentActivityExecutionSize: 100,
+  }
+
+This is an example setting, not a universal recommended value. Choose limits based on
+task duration, CPU/memory, polling behavior, and downstream capacity.
+
+14. HOW TO SCALE FOR 200,000 WORKFLOWS
+--------------------------------------
+Do not choose worker count based only on the number of open workflows.
+
+First distinguish:
+- Open workflows: all executions not yet closed.
+- Ready tasks: tasks that need a worker now.
+- Throughput: how many tasks complete per second/minute.
+- Latency: how long tasks wait and execute.
+
+Many workflows may be waiting for timers, signals, or external events, so 200,000 open
+workflows do not imply 200,000 worker threads.
+
+Scaling approach:
+1. Measure workload and locate the bottleneck.
+2. Monitor task queue backlog/age and schedule-to-start latency.
+3. Scale Workflow Workers if Workflow Task processing/replay is the bottleneck.
+4. Scale Activity Workers if Activity execution capacity is the bottleneck.
+5. Tune pollers and concurrency limits.
+6. Separate workload types using different task queues when isolation is useful.
+7. Protect databases/APIs with rate limits, bounded concurrency, connection pools, and
+   backpressure.
+8. Check Temporal Server and persistence capacity separately.
+9. Load-test representative workflow histories, activity duration, retries, and bursts.
+10. Scale gradually and verify that throughput improves without increasing failures.
+
+Conceptual model:
+  Effective throughput is limited by the minimum of worker capacity, downstream capacity,
+  and Temporal Server/persistence capacity.
+
+15. WHAT BECOMES THE BOTTLENECK?
+--------------------------------
+Symptoms and possible causes:
+- High schedule-to-start latency: insufficient worker/poller capacity, task queue pressure,
+  or Temporal dispatch/server-side issues.
+- High Activity execution latency: slow database/API or inefficient Activity code.
+- High worker CPU: CPU-heavy code, high replay cost, or too much work per worker.
+- Database connection exhaustion: too much activity concurrency or undersized DB capacity.
+- High Workflow Task latency: expensive replay, workflow code, or server pressure.
+- Backlog continually increasing: arrival rate exceeds sustainable processing capacity.
+
+Measure before scaling. Increasing workers can worsen a downstream bottleneck.
+
+16. TEMPORAL SERVER SCALING VS WORKER SCALING
+---------------------------------------------
+Worker scaling:
+- Adds application execution capacity.
+- Add replicas, CPU/memory, or tune worker concurrency/pollers.
+- Helps when workers cannot keep up with ready tasks.
+
+Temporal Server scaling:
+- Addresses server-side workflow coordination, task dispatching, API load, history operations,
+  and persistence pressure.
+- Self-hosted Temporal requires operating server components and supporting persistence.
+- Temporal Cloud manages much of the underlying service infrastructure, but application
+  workers and downstream pressure still need attention.
+
+Adding worker replicas does not fix a server/persistence bottleneck. Likewise, scaling the
+server does not automatically add Activity execution capacity.
+
+17. NAMESPACE CONSIDERATIONS
+----------------------------
+A Namespace is a logical isolation and administration boundary in Temporal.
+
+- Task queues exist within a Namespace.
+- Workers must connect to the appropriate Namespace and poll the intended task queue.
+- Namespaces may separate environments or workloads, such as payments-prod and payments-staging.
+- Namespace separation can help operations and isolation, but does not automatically guarantee
+  separate physical infrastructure or unlimited capacity.
+- Creating more Namespaces is not a substitute for scaling workers.
+
+18. LONG-RUNNING WORKFLOWS (15–30 DAYS)
+---------------------------------------
+A long-running workflow does not occupy one worker thread for its entire lifetime.
+
+It may:
+- Execute an Activity.
+- Wait for a signal or timer.
+- Release the worker to process other tasks.
+- Resume when Temporal schedules another Workflow Task.
+
+Consider:
+- Workflow history size and replay cost.
+- Continue-As-New where appropriate to keep histories manageable.
+- Workflow code compatibility during deployments.
+- Durable timers and signals rather than blocking sleeps.
+- Idempotent Activities and safe retry behavior.
+- Backpressure if many workflows become active simultaneously.
+
+A large number of open workflows is not necessarily a large number of active tasks at one time.
+
+19. MONITORING METRICS
+----------------------
+Monitor both Temporal and application dependencies.
+
+Useful signals:
+- Workflow Task schedule-to-start latency.
+- Activity schedule-to-start latency.
+- Activity execution latency.
+- Activity failures and retries.
+- Task queue backlog and backlog age.
+- Workflow execution failures and latency.
+- Worker CPU, memory, replica availability, and poller behavior.
+- Database connection pool utilization and latency.
+- External API latency and error rate.
+- Temporal Server/persistence latency and resource pressure when self-hosted.
+
+Alert on sustained queue latency, growing backlog age, repeated activity failures, worker
+unavailability, and downstream saturation. A large number of open workflows alone is not
+necessarily an incident.
+
+20. SAGA PATTERN AND TEMPORAL
+-----------------------------
+A Saga splits a distributed business transaction into local transactions with compensating
+actions for failures.
+
+Example:
+  Create Order -> Charge Payment -> Reserve Inventory -> Arrange Shipping
+
+If inventory reservation fails:
+  Refund Payment -> Cancel Order
+
+A compensation is a new business operation, not a database rollback across services.
+Compensations can fail too and should be retried where appropriate and designed to be
+idempotent.
+
+Temporal can orchestrate Saga steps, retries, timeouts, and compensations durably.
+
+21. RETRIES, IDEMPOTENCY, AND TIMEOUTS
+--------------------------------------
+- Activity retries may execute an Activity more than once.
+- Use idempotency keys or other deduplication mechanisms for external side effects.
+- A client timeout does not prove that the server failed; the operation may have completed.
+- Use bounded retries, exponential backoff, and jitter.
+- Classify retryable and non-retryable errors.
+- Avoid retry storms and respect downstream rate limits.
+- Apply an overall deadline/timeout appropriate to the business operation.
+
+22. INTERVIEW QUICK ANSWERS
+---------------------------
+Q: What is replay?
+A: Temporal re-executes workflow code against persisted history to reconstruct state. Recorded
+   Activity results are reused; completed Activities are not rerun merely because of replay.
+
+Q: Why must workflow code be deterministic?
+A: Replay must produce commands compatible with the recorded history. Different decisions can
+   cause non-determinism errors.
+
+Q: What happens if a worker dies?
+A: Workflow state can be reconstructed by another compatible worker from persisted history.
+   An Activity that was in progress may be retried, so external side effects must be idempotent.
+
+Q: What is sticky scheduling?
+A: Temporal prefers sending subsequent Workflow Tasks to the same worker to reuse cached state
+   and reduce replay. If that worker/cache is unavailable, another worker can replay history.
+
+Q: Does Temporal automatically version Workflow code?
+A: No. Temporal provides versioning APIs and worker deployment/versioning mechanisms, but
+   developers must make incompatible Workflow changes compatible.
+
+Q: Does Temporal have an Activity version API like Workflow.getVersion?
+A: There is no general Activity-version API directly analogous to Workflow.getVersion. An
+   unexecuted Activity normally runs the implementation available on the worker receiving it,
+   unless deployment/routing/application versioning controls that behavior.
+
+Q: How do you scale for 200,000 workflows?
+A: Measure ready-task rate and latency, scale Workflow and Activity Workers separately, tune
+   pollers/concurrency, protect downstream dependencies, and verify Temporal Server capacity.
+   Open workflow count alone does not determine required worker count.
+
+Q: What if more workers do not improve throughput?
+A: Find the bottleneck: downstream database/API, worker CPU, pollers/concurrency, Temporal
+   dispatching, or persistence. More workers can worsen downstream saturation.
+
+Q: How do you deploy a Workflow change with 100,000 workflows running for 30 days?
+A: Test replay compatibility, use workflow versioning/patching for incompatible command changes,
+   roll out compatible workers carefully, monitor errors and queue latency, and retain old paths
+   while relevant histories need them. Consider Worker Versioning for deployment-level routing.
+
+23. FINAL MENTAL MODEL
+----------------------
+- Temporal Server = durable coordination and persisted history.
+- Workflow = deterministic orchestration logic.
+- Activity = external/non-deterministic work; make side effects idempotent.
+- Workflow Task = run workflow logic and decide next commands.
+- Activity Task = execute an Activity.
+- Task Queue = logical routing mechanism.
+- Worker = process that polls and executes tasks.
+- Poller = requests tasks.
+- Concurrency = simultaneous task execution capacity.
+- Sticky scheduling = cache/replay optimization, not a correctness guarantee.
+- Workflow versioning = compatible evolution of orchestration logic.
+- Worker Versioning = deployment/routing control for worker code versions.
+- Scaling = measure bottleneck, scale the relevant layer, protect dependencies.
+
+END OF NOTES
