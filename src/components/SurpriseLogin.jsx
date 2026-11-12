@@ -58,7 +58,7 @@ export default function SurpriseLogin() {
             <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-400 via-pink-300 to-blue-400 bg-clip-text text-transparent font-display">
               A Little Surprise
             </h1>
-            <p className="text-white/50 mt-2 text-sm tracking-wide">This is for someone special ✨</p>
+            {/* <p className="text-white/50 mt-2 text-sm tracking-wide">This is for someone special ✨</p> */}
           </motion.div>
 
           {/* Form */}

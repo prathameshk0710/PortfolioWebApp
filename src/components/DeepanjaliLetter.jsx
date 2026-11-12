@@ -2,62 +2,152 @@ import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 
-/* ── Polaroid photo component ── */
-const Polaroid = ({ caption, rotate, delay, children }) => {
+
+/* ── Polaroid memories ── */
+const memories = [
+  { src: '/photos/1.jpg', caption: 'Weeks of effort, one perfect gift \uD83D\uDC3E', rotate: -3 },
+  { src: '/photos/2.jpg', caption: 'My first photography class \uD83C\uDFDE\uFE0F', rotate: 4 },
+  { src: '/photos/3.jpg', caption: 'The best bday you can ever celebrate\uD83E\uDD73', rotate: -2 },
+  { src: '/photos/4.jpg', caption: 'Bhand Deepa Boi \uD83E\uDD74\uD83C\uDF7A', rotate: 5 },
+  { src: '/photos/5.jpg', caption: 'Random plans, priceless memories \uD83C\uDF38', rotate: -4 },
+  { src: '/photos/6.jpg', caption: 'In one frame, for the last time...', rotate: 3 },
+  { src: '/photos/7.jpg', caption: 'Best Ganesh Chaturthi ever \uD83D\uDE4F\u2728', rotate: -3 },
+  { src: '/photos/8.jpg', caption: 'Cuties together \uD83E\uDD17\uD83D\uDC95', rotate: 4 },
+  { src: "/photos/9.jpg", caption: "It\u0027s just us time \uD83D\uDC96", rotate: -2 },
+]
+
+/* cleaned below �', rotate: 4 },
+{ src: '/photos/3.jpg', caption: 'Us being us 😂', rotate: -2 },
+{ src: '/photos/4.jpg', caption: 'Bhand Deepa Boi 🥴🍺', rotate: 5 },
+{ src: '/photos/5.jpg', caption: 'More memories 🌸', rotate: -4 },
+{ src: '/photos/6.jpg', caption: 'In one frame, for the last time... �', rotate: 3 },
+{ src: '/photos/7.jpg', caption: 'Best Ganesh Chaturthi ever �✨', rotate: -3 },
+{ src: '/photos/8.jpg', caption: 'Cuties together 🤗💕', rotate: 4 },
+end */
+// { src: '/photos/9.jpg', caption: "It's just us time 💖", rotate: -2 },
+const Polaroid = ({ index, src, caption, rotate }) => {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-50px' })
+  const inView = useInView(ref, { once: true, margin: '-40px' })
   return (
     <motion.div ref={ref}
-      initial={{ opacity: 0, y: 40, rotate: rotate - 5 }}
+      initial={{ opacity: 0, y: 30, rotate: rotate - 5 }}
       animate={inView ? { opacity: 1, y: 0, rotate } : {}}
-      transition={{ duration: 0.7, delay, ease: 'easeOut' }}
-      className="bg-white p-2.5 pb-12 rounded-sm shadow-2xl relative flex-shrink-0"
-      style={{ width: 220, maxWidth: '45vw' }}>
+      whileHover={{ scale: 1.05, rotate: 0, zIndex: 10 }}
+      transition={{ duration: 0.6, delay: (index % 3) * 0.1 }}
+      className="bg-white p-2 pb-10 md:p-3 md:pb-12 rounded-sm shadow-2xl cursor-pointer relative group">
       {/* tape strip */}
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-5 bg-yellow-100/80 rounded-sm shadow-sm"
+      <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-10 h-4 bg-yellow-100/80 rounded-sm shadow-sm"
         style={{ transform: 'translateX(-50%) rotate(-2deg)' }} />
-      {/* photo area */}
-      <div className="aspect-square bg-gray-100 rounded-sm overflow-hidden flex items-center justify-center text-gray-300">
-        {children || <span className="text-3xl">📷</span>}
-        {/* Replace children with: <img src="/photos/x.jpg" className="w-full h-full object-cover" /> */}
+      {/* photo */}
+      <div className="aspect-square overflow-hidden rounded-sm">
+        <img src={src} alt={caption} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
       </div>
       {/* caption */}
-      <p className="absolute bottom-2.5 inset-x-2.5 text-center text-gray-600 text-sm"
+      <p className="absolute bottom-2 md:bottom-3 inset-x-2 text-center text-gray-600"
         style={{ fontFamily: "'Caveat', cursive", fontSize: '1rem' }}>
         {caption}
+      </p>
+    </motion.div >
+  )
+}
+
+/* ── Dynamic Age Counter ── */
+const BIRTHDAY = new Date(2002, 10, 14) // 14 Nov 2002 (month is 0-indexed)
+
+function getAge() {
+  const now = new Date()
+  let years = now.getFullYear() - BIRTHDAY.getFullYear()
+  let months = now.getMonth() - BIRTHDAY.getMonth()
+  let days = now.getDate() - BIRTHDAY.getDate()
+  if (days < 0) {
+    months--
+    const prev = new Date(now.getFullYear(), now.getMonth(), 0)
+    days += prev.getDate()
+  }
+  if (months < 0) {
+    years--
+    months += 12
+  }
+  return { years, months, days }
+}
+
+const AgeCounter = () => {
+  const [age, setAge] = useState(getAge)
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true })
+
+  useEffect(() => {
+    const timer = setInterval(() => setAge(getAge()), 60000) // update every minute
+    return () => clearInterval(timer)
+  }, [])
+
+  return (
+    <motion.div ref={ref} className="text-center mb-16"
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7 }}>
+      <p className="text-pink-300/60 text-sm mb-3 uppercase tracking-widest">Being awesome for</p>
+      <div className="flex justify-center gap-4 md:gap-6">
+        {[
+          { value: age.years, label: 'Years' },
+          { value: age.months, label: 'Months' },
+          { value: age.days, label: 'Days' },
+        ].map((item, i) => (
+          <motion.div key={item.label}
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={inView ? { scale: 1, opacity: 1 } : {}}
+            transition={{ duration: 0.5, delay: i * 0.15 }}
+            className="backdrop-blur-xl bg-white/5 rounded-2xl p-4 md:p-6 border border-pink-300/15 min-w-[80px] md:min-w-[100px]">
+            <p className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text text-transparent">
+              {item.value}
+            </p>
+            <p className="text-white/40 text-xs md:text-sm mt-1">{item.label}</p>
+          </motion.div>
+        ))}
+      </div>
+      <p className="text-white/30 text-xs mt-4 italic" style={{ fontFamily: "'Caveat', cursive", fontSize: '1.7rem' }}>
+        ...and counting! ✨
       </p>
     </motion.div>
   )
 }
 
-/* ── Letter section: text + photo side by side ── */
-const LetterSection = ({ text, photo, reverse, index }) => {
+/* ── Confetti burst on scroll ── */
+const confettiColors = ['#f472b6', '#60a5fa', '#f9a8d4', '#93c5fd', '#fbbf24', '#34d399', '#a78bfa', '#fb923c']
+
+const ConfettiBurst = () => {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
-  const textSide = (
-    <motion.div
-      initial={{ opacity: 0, x: reverse ? 40 : -40 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.7, delay: 0.1 }}
-      className="flex-1 min-w-0">
-      <p className="text-white/80 leading-loose text-lg md:text-xl"
-        style={{ fontFamily: "'Caveat', cursive", fontSize: '1.35rem', lineHeight: 1.9 }}>
-        {text}
-      </p>
-    </motion.div>
+  const inView = useInView(ref, { once: true, margin: '-100px' })
+  const [particles] = useState(() =>
+    Array.from({ length: 60 }, (_, i) => ({
+      id: i,
+      x: (Math.random() - 0.5) * 600,
+      y: -(200 + Math.random() * 400),
+      rotate: Math.random() * 720 - 360,
+      color: confettiColors[i % confettiColors.length],
+      size: 6 + Math.random() * 8,
+      duration: 1.5 + Math.random() * 1.5,
+      delay: Math.random() * 0.4,
+      shape: Math.random() > 0.5 ? 'circle' : 'rect',
+    }))
   )
-  const photoSide = (
-    <div className="flex-shrink-0 flex justify-center">
-      <Polaroid caption={photo.caption} rotate={photo.rotate || (reverse ? -3 : 3)} delay={0.25}>
-        {photo.src && <img src={photo.src} alt={photo.caption} className="w-full h-full object-cover" />}
-      </Polaroid>
-    </div>
-  )
+
   return (
-    <div ref={ref}
-      className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-8 md:gap-12 mb-16 md:mb-24`}>
-      {textSide}
-      {photoSide}
+    <div ref={ref} className="relative w-full h-0 overflow-visible pointer-events-none">
+      {inView && particles.map(p => (
+        <motion.div key={p.id}
+          className="absolute left-1/2 top-0"
+          initial={{ x: 0, y: 0, opacity: 1, rotate: 0, scale: 1 }}
+          animate={{ x: p.x, y: p.y, opacity: [1, 1, 0], rotate: p.rotate, scale: [0, 1, 0.5] }}
+          transition={{ duration: p.duration, delay: p.delay, ease: 'easeOut' }}
+          style={{
+            width: p.size,
+            height: p.shape === 'rect' ? p.size * 0.6 : p.size,
+            borderRadius: p.shape === 'circle' ? '50%' : '2px',
+            background: p.color,
+          }}
+        />
+      ))}
     </div>
   )
 }
@@ -165,33 +255,12 @@ export default function DeepanjaliLetter() {
 
   if (sessionStorage.getItem('surprise_auth') !== 'true') return null
 
-  /* Each section = a paragraph of the letter + a polaroid photo beside it */
-  const sections = [
-    {
-      text: "Dear Deepanjali, on this special day I wanted to write you something from the heart — something you can come back to whenever you need a reminder of how amazing you are... ✨",
-      photo: { caption: 'The day it all began 💫', rotate: 3 },
-    },
-    {
-      text: "Every moment spent with you feels like a little adventure. Your laughter, your kindness, the way you light up every room — it's magic, pure and simple. 🌸",
-      photo: { caption: 'That beautiful smile 🌸', rotate: -2 },
-    },
-    {
-      text: "Remember the silly moments? The inside jokes nobody else would understand? Those are my favourite chapters of us. I wouldn't trade them for anything in the world. 😄",
-      photo: { caption: 'Our silly adventures 😄', rotate: 4 },
-    },
-    {
-      text: "You've grown so much, handled so much, and still managed to be the most warm-hearted person I know. I'm proud of you — more than words on a screen could ever say. 💪",
-      photo: { caption: 'Stronger every day 💪', rotate: -3 },
-    },
-    {
-      text: "Here's to more memories, more laughter, more late-night conversations, and more of everything that makes us, us. The best chapters are still unwritten. 🥰",
-      photo: { caption: 'Together & happy 🥰', rotate: 2 },
-    },
-    {
-      text: "Happy birthday, DeepaBoi. Today is YOUR day — may it be filled with all the love and joy you so generously give to everyone else. You deserve the world. 🎂🎉",
-      photo: { caption: 'Forever in my heart 💖', rotate: -4 },
-    },
-  ]
+  /* { emoji: '�', text: 'That hours-long first call' },
+  { emoji: '😂', text: 'Surviving every Kalesh' },
+  { emoji: '🤝', text: 'Always coming back stronger' },
+  { emoji: '🥹', text: 'Through every tough time' },
+  { emoji: '❤️', text: '4 years & counting' },
+  ] */
 
   return (
     <div className="overflow-x-hidden" style={{ background: '#0f172a' }}>
@@ -247,17 +316,19 @@ export default function DeepanjaliLetter() {
             </p>
           </motion.div>
 
+          {/* ── Age Counter ── */}
+          <AgeCounter />
+
           {/* ── Big letter section ── */}
           <motion.div className="mb-24"
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.8 }}>
             <div className="backdrop-blur-xl bg-white/5 rounded-3xl p-8 md:p-14 border border-pink-300/15 shadow-2xl">
               <div className="flex items-center gap-3 mb-8">
-                <span className="text-2xl">💌</span>
-                <h2 className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text text-transparent font-display">A Letter For You</h2>
+                <h2 className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text text-transparent font-display">Something I've Been Meaning to Say...</h2>
               </div>
               <div className="space-y-7 leading-relaxed text-justify"
-                style={{ fontFamily: "'Caveat', cursive", fontSize: '1.7rem', lineHeight: 2.2, letterSpacing: '0.01em' }}>
+                style={{ fontFamily: "'Caveat', cursive", fontSize: '1.3rem', lineHeight: 2.2, letterSpacing: '0.01em' }}>
                 <p className="text-pink-300/70 italic" style={{ fontSize: '1.9rem' }}>Hey Deepa boi,</p>
 
                 <p className="text-white/80">
@@ -297,41 +368,28 @@ export default function DeepanjaliLetter() {
                   Wish you many, many happy returns of the day! 🎂🥳❤️
                 </p>
 
-                <p className="text-right text-pink-300/70 italic mt-10">Tera pyara bot.... 💕</p>
+                <p className="text-right text-white italic mt-10">Tera pyara bot.... 🤖</p>
               </div>
             </div>
           </motion.div>
 
-          {/* ── Letter sections with inline photos ── */}
-          {sections.map((section, i) => (
-            <LetterSection key={i} index={i} text={section.text} photo={section.photo} reverse={i % 2 !== 0} />
-          ))}
-
-          {/* ── Sign-off ── */}
-          <motion.div className="text-center mt-8 mb-20"
-            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-            viewport={{ once: true }} transition={{ duration: 1 }}>
-            <p className="text-pink-300/80 text-2xl italic" style={{ fontFamily: "'Caveat', cursive", fontSize: '1.8rem' }}>
-              With all my love, always & forever 💕
-            </p>
-          </motion.div>
-
-          {/* ── Extra memory lane grid ── */}
+          {/* ── Our Memories — Polaroids ── */}
           <motion.div className="mb-20"
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
             viewport={{ once: true }} transition={{ duration: 0.8 }}>
             <div className="text-center mb-10">
-              <h2 className="text-2xl md:text-3xl font-bold text-pink-300 font-display">✨ More Memories ✨</h2>
-              <p className="text-white/40 mt-2 text-sm">A few more moments I never want to forget</p>
+              <h2 className="text-2xl md:text-3xl font-bold text-pink-300 font-display">📸 Our Memories</h2>
+              <p className="text-white/40 mt-2 text-sm">A few moments I never want to forget</p>
             </div>
-            <div className="flex flex-wrap justify-center gap-6 md:gap-8">
-              {['Our first trip 🌍', 'Festival vibes 🪔', 'Foodies forever 🍕', 'That golden hour 🌅'].map((cap, i) => (
-                <Polaroid key={i} caption={cap} rotate={[-3, 4, -2, 5][i]} delay={i * 0.12} />
+            <div className="grid grid-cols-3 gap-6 md:gap-8 justify-items-center">
+              {memories.map((m, i) => (
+                <Polaroid key={i} index={i} src={m.src} caption={m.caption} rotate={m.rotate} />
               ))}
             </div>
           </motion.div>
 
           {/* ── Final wish ── */}
+          <ConfettiBurst />
           <motion.div className="text-center pb-16"
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.8 }}>
@@ -344,11 +402,11 @@ export default function DeepanjaliLetter() {
               <p className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-pink-400 via-pink-300 to-blue-400 bg-clip-text text-transparent font-display">
                 Wishing you the happiest birthday ever!
               </p>
-              <p className="text-white/30 text-sm mt-3">Made with ❤️ just for you</p>
+              <p className="text-white/30 text-sm mt-3">Built with sleepless nights & lots of love ❤️</p>
             </div>
           </motion.div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
