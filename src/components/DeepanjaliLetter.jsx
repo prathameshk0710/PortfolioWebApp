@@ -356,7 +356,7 @@ export default function DeepanjaliLetter() {
                   Nevertheless, whatever happens in the future is something we&apos;ll deal with when the time comes. But one thing Deepa, you have been a very great person to me. You always have been, and you always will be. No matter how things turn out or who comes into my life, you will always have a special place in my heart. 😊❤️
                 </p>
                 <p className="text-white/80">
-                  Kabhi bhi life mein hum kahin bhi ho, jo bhi kar rahe ho, jiske saath bhi ho, it doesn&apos;t matter. Jab bhi zarurat pade, just a call away, Deepa boi. I will be right there with you, and that&apos;s my promise for life. 🤝❤️ Duniya itni bhi badi nahi hai, Deepa boi, ki humein aise alag kar paaye. 🌝🌝
+                  Kabhi bhi life mein hum kahin bhi ho, jo bhi kar rahe ho, jiske saath bhi ho, it doesn&apos;t matter. Jab bhi zarurat pade, I am just a call away, Deepa boi. I will be right there with you, and that&apos;s my promise for life. 🤝❤️ Duniya itni bhi badi nahi hai, Deepa boi, ki humein aise alag kar paaye. 🌝🌝
                 </p>
                 <p className="text-white/80">
                   Just keep in mind, this Bot will always be with you... ❤️🤖
