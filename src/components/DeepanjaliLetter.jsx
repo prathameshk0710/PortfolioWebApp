@@ -256,32 +256,48 @@ export default function DeepanjaliLetter() {
                 <span className="text-2xl">💌</span>
                 <h2 className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text text-transparent font-display">A Letter For You</h2>
               </div>
-              <div className="space-y-6 leading-relaxed"
-                style={{ fontFamily: "'Caveat', cursive", fontSize: '1.4rem', lineHeight: 2 }}>
-                <p className="text-pink-300/60 italic text-lg">Dear Deepanjali,</p>
+              <div className="space-y-7 leading-relaxed"
+                style={{ fontFamily: "'Caveat', cursive", fontSize: '1.7rem', lineHeight: 2.2, letterSpacing: '0.01em' }}>
+                <p className="text-pink-300/70 italic" style={{ fontSize: '1.9rem' }}>Hey Deepa boi,</p>
 
-                {/* TODO: Replace this placeholder with your actual long letter text */}
                 <p className="text-white/80">
-                  Write your big heartfelt message here. This is your space to express everything —
-                  all the things you've been meaning to say, the feelings you want to put into words,
-                  the memories that mean the most to you.
+                  Yeah, I thought of making something that could be treasured forever and that either of us could revisit whenever we feel like it. This is just a small gesture from me to you on your special day… ❤️
                 </p>
                 <p className="text-white/80">
-                  Go on, pour your heart out. Write as much as you want — this section will grow
-                  with your words. Talk about the first time you met, the moments that took your
-                  breath away, the little things that made the biggest difference.
+                  You are one of the most amazing people I have ever met in my life. You have always been my support system during my tough times. You are the person who has always shared my happiness as if it were your own. I have always been grateful to you for that.
                 </p>
                 <p className="text-white/80">
-                  Tell her what she means to you. Tell her about the future you imagine. Tell her
-                  everything that words can carry — and even the things they can't. This is your
-                  letter, and every word here is a gift.
+                  I still remember those days when we first talked to each other on Insta, and the very next day, we were on an hours-long call. Ussi time se hamari kaafi vibe match hoti aa rahi hai. 😂❤️ Kaafi problems face kari hain humne saath mein unn 4 saalon mein. Kaafi saare jhagde, losing friends, downfalls... But one thing that never changed was us. We have always come back stronger together after every &quot;Kalesh&quot;. 😂😂😂
                 </p>
                 <p className="text-white/80">
-                  Add as many paragraphs as you need. There's no limit — keep writing until you've
-                  said it all. ✨
+                  It would have been so difficult for me to get through those 4 years if you hadn&apos;t been there with me, and I am still in your debt. I think woh kabhi chuka nahi paaunga main. 🥹🥹🥹 We have been doing so good so far. I wish we could continue to be the same forever... I want to see more of us being together. There are so many things I want to do and experience with you. ❤️
+                </p>
+                <p className="text-white/80">
+                  You know what? I am always afraid maybe things won&apos;t remain the same between us after some time. Currently, you are my priority, Deepa boi. I would do anything, anytime, anywhere for you. But soon, time will change. There will be some new girl in my life, kisi na kisi se toh shaadi karwa degi mummy. 😂 Ya maan le, tere ghar wale karwa dein tera rishta kisi se, and stuff. Things will have to change from that point onwards. Priorities will have to change.
+                </p>
+                <p className="text-white/80">
+                  It feels so sad that you and I might not be able to remain the same as we are right now. Hum nahi de paayenge ek doosre ko utna time jitna hum abhi de rahe hain ya de sakte hain. I hate and fear this possibility a lot. I agree, it&apos;s life, and it has to take turns. We have to keep moving forward. But yaar, Deepa boi, do we seriously have to do this??? Why can&apos;t we be together???
+                </p>
+                <p className="text-white/80">
+                  I still want to give us a chance. Kaafi time se hum saath mein hain, kaafi samajhte hain ek doosre ko hum. Pyaar hi toh karna hota hai, woh pehle se hi karte hain, thoda aur kar lengey. 🥹🥹❤️ Baaki toh we&apos;ll figure out yaar. Samajhdaar log hain hum. If things work out, it&apos;s great. If they don&apos;t, it&apos;s alright, Deepa boi. We will still be the friends we have always been. At least, it&apos;s not like we didn&apos;t try. At least, we can say we tried and failed. At least, this is how I think. Do let me know what you think about this. 🙃🙃
+                </p>
+                <p className="text-white/80">
+                  Nevertheless, whatever happens in the future is something we&apos;ll deal with when the time comes. But one thing Deepa, you have been a very great person to me. You always have been, and you always will be. No matter how things turn out or who comes into my life, you will always have a special place in my heart. 😊❤️
+                </p>
+                <p className="text-white/80">
+                  Kabhi bhi life mein hum kahin bhi ho, jo bhi kar rahe ho, jiske saath bhi ho, it doesn&apos;t matter. Jab bhi zarurat pade, just a call away, Deepa boi. I will be right there with you, and that&apos;s my promise for life. 🤝❤️ Duniya itni bhi badi nahi hai, Deepa boi, ki humein aise alag kar paaye. 🌝🌝
+                </p>
+                <p className="text-white/80">
+                  Just keep in mind, this Bot will always be with you... ❤️🤖
+                </p>
+                <p className="text-white/80">
+                  Love you so much, Deepa boi! ♥️♥️♥️
+                </p>
+                <p className="text-white/80">
+                  Wish you many, many happy returns of the day! 🎂🥳❤️
                 </p>
 
-                <p className="text-right text-pink-300/70 italic mt-10">— Yours, always & forever 💕</p>
+                <p className="text-right text-pink-300/70 italic mt-10">Tera pyara bot.... 💕</p>
               </div>
             </div>
           </motion.div>
