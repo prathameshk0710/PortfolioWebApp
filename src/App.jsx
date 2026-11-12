@@ -10,6 +10,8 @@ import TechStack from './components/TechStack'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import StudyMaterials from './components/StudyMaterials'
+import SurpriseLogin from './components/SurpriseLogin'
+import DeepanjaliLetter from './components/DeepanjaliLetter'
 
 function Portfolio() {
   const [darkMode, setDarkMode] = useState(false)
@@ -54,6 +56,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Portfolio />} />
       <Route path="/notes" element={<StudyMaterials />} />
+      <Route path="/surprise" element={<SurpriseLogin />} />
+      <Route path="/deepanjali" element={<DeepanjaliLetter />} />
     </Routes>
   )
 }
