@@ -133,7 +133,7 @@ const HeartbeatIntro = ({ onComplete }) => {
       {/* Text after burst */}
       <AnimatePresence>
         {phase >= 2 && (
-          <motion.div className="absolute inset-0 flex flex-col items-center justify-center z-20"
+          <motion.div className="absolute inset-0 flex flex-col items-center justify-center z-20 text-center px-6"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
             <motion.p className="text-pink-300 text-2xl md:text-3xl font-semibold mb-3"
               style={{ fontFamily: "'Caveat', cursive", fontSize: '2rem' }}
@@ -194,7 +194,7 @@ export default function DeepanjaliLetter() {
   ]
 
   return (
-    <>
+    <div className="overflow-x-hidden" style={{ background: '#0f172a' }}>
       <AnimatePresence>
         {showSplash && <HeartbeatIntro onComplete={() => setShowSplash(false)} />}
       </AnimatePresence>
@@ -256,7 +256,7 @@ export default function DeepanjaliLetter() {
                 <span className="text-2xl">💌</span>
                 <h2 className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text text-transparent font-display">A Letter For You</h2>
               </div>
-              <div className="space-y-7 leading-relaxed"
+              <div className="space-y-7 leading-relaxed text-justify"
                 style={{ fontFamily: "'Caveat', cursive", fontSize: '1.7rem', lineHeight: 2.2, letterSpacing: '0.01em' }}>
                 <p className="text-pink-300/70 italic" style={{ fontSize: '1.9rem' }}>Hey Deepa boi,</p>
 
@@ -349,6 +349,6 @@ export default function DeepanjaliLetter() {
           </motion.div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
