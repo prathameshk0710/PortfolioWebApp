@@ -30,24 +30,92 @@ const Polaroid = ({ index, src, caption, rotate }) => {
   const inView = useInView(ref, { once: true, margin: '-40px' })
   return (
     <motion.div ref={ref}
-      initial={{ opacity: 0, y: 30, rotate: rotate - 5 }}
-      animate={inView ? { opacity: 1, y: 0, rotate } : {}}
+      initial={{ opacity: 0, y: 30, rotate: 0 }}
+      animate={inView ? { opacity: 1, y: 0, rotate: typeof window !== 'undefined' && window.innerWidth >= 768 ? rotate : 0 } : {}}
       whileHover={{ scale: 1.05, rotate: 0, zIndex: 10 }}
       transition={{ duration: 0.6, delay: (index % 3) * 0.1 }}
-      className="bg-white p-2 pb-10 md:p-3 md:pb-12 rounded-sm shadow-2xl cursor-pointer relative group">
+      className="bg-white p-1.5 pb-8 sm:p-2 sm:pb-10 md:p-3 md:pb-12 rounded-sm shadow-2xl cursor-pointer relative group flex-shrink-0 w-[200px] sm:w-auto">
       {/* tape strip */}
-      <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-10 h-4 bg-yellow-100/80 rounded-sm shadow-sm"
+      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 sm:w-10 sm:h-4 bg-yellow-100/80 rounded-sm shadow-sm"
         style={{ transform: 'translateX(-50%) rotate(-2deg)' }} />
       {/* photo */}
       <div className="aspect-square overflow-hidden rounded-sm">
         <img src={src} alt={caption} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
       </div>
       {/* caption */}
-      <p className="absolute bottom-2 md:bottom-3 inset-x-2 text-center text-gray-600"
-        style={{ fontFamily: "'Caveat', cursive", fontSize: '1rem' }}>
+      <p className="absolute bottom-1 sm:bottom-2 md:bottom-3 inset-x-1 sm:inset-x-2 text-center text-gray-600 text-xs sm:text-sm md:text-base leading-tight"
+        style={{ fontFamily: "'Caveat', cursive" }}>
         {caption}
       </p>
-    </motion.div >
+    </motion.div>
+  )
+}
+
+/* ── Stacked Cards (mobile) ── */
+const StackedCards = ({ items }) => {
+  const [current, setCurrent] = useState(0)
+  const total = items.length
+
+  const swipe = (dir) => {
+    setCurrent(prev => dir === 'next' ? Math.min(prev + 1, total - 1) : Math.max(prev - 1, 0))
+  }
+
+  return (
+    <div className="flex flex-col items-center">
+      {/* Card stack */}
+      <div className="relative w-[260px] h-[340px]">
+        <AnimatePresence mode="popLayout">
+          {items.map((m, i) => {
+            const offset = i - current
+            if (offset < 0 || offset > 3) return null
+            const rotations = [0, 3, -2, 4]
+            return (
+              <motion.div key={i}
+                className="absolute inset-0 bg-white p-2 pb-10 rounded-sm shadow-2xl cursor-pointer"
+                style={{ zIndex: total - offset }}
+                initial={{ scale: 0.9, y: 30, opacity: 0 }}
+                animate={{
+                  scale: 1 - offset * 0.04,
+                  y: offset * 12,
+                  x: offset * 6,
+                  rotate: rotations[offset] || 0,
+                  opacity: offset === 0 ? 1 : 0.7 - offset * 0.15,
+                }}
+                exit={{ x: -300, rotate: -15, opacity: 0 }}
+                transition={{ duration: 0.4 }}
+                drag={offset === 0 ? 'x' : false}
+                dragConstraints={{ left: 0, right: 0 }}
+                onDragEnd={(_, info) => {
+                  if (info.offset.x < -80) swipe('next')
+                  else if (info.offset.x > 80) swipe('prev')
+                }}
+              >
+                {/* tape */}
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 bg-yellow-100/80 rounded-sm shadow-sm"
+                  style={{ transform: 'translateX(-50%) rotate(-2deg)' }} />
+                {/* photo */}
+                <div className="aspect-square overflow-hidden rounded-sm">
+                  <img src={m.src} alt={m.caption} className="w-full h-full object-cover" draggable={false} />
+                </div>
+                {/* caption */}
+                <p className="absolute bottom-2 inset-x-2 text-center text-gray-600 text-sm leading-tight"
+                  style={{ fontFamily: "'Caveat', cursive" }}>
+                  {m.caption}
+                </p>
+              </motion.div>
+            )
+          })}
+        </AnimatePresence>
+      </div>
+
+      {/* Dots + counter */}
+      <div className="flex gap-1.5 mt-6">
+        {items.map((_, i) => (
+          <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 ${i === current ? 'bg-pink-400 scale-125' : 'bg-white/20'}`} />
+        ))}
+      </div>
+      <p className="text-white/30 text-xs mt-2">{current + 1} / {total}</p>
+    </div>
   )
 }
 
@@ -381,7 +449,11 @@ export default function DeepanjaliLetter() {
               <h2 className="text-2xl md:text-3xl font-bold text-pink-300 font-display">📸 Our Memories</h2>
               <p className="text-white/40 mt-2 text-sm">A few moments I never want to forget</p>
             </div>
-            <div className="grid grid-cols-3 gap-6 md:gap-8 justify-items-center">
+            {/* Mobile: Stacked Cards | Desktop: 3-col grid */}
+            <div className="md:hidden">
+              <StackedCards items={memories} />
+            </div>
+            <div className="hidden md:grid grid-cols-3 gap-8 justify-items-center">
               {memories.map((m, i) => (
                 <Polaroid key={i} index={i} src={m.src} caption={m.caption} rotate={m.rotate} />
               ))}
