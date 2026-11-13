@@ -108,11 +108,11 @@ const AutoCarousel = ({ items }) => {
 /* ── Stacked Cards (mobile, infinite loop) ── */
 const StackedCards = ({ items }) => {
   const [current, setCurrent] = useState(0)
-  const [direction, setDirection] = useState('next')
+  const dirRef = useRef('next')
   const total = items.length
 
   const swipe = (dir) => {
-    setDirection(dir)
+    dirRef.current = dir
     setCurrent(prev => dir === 'next' ? (prev + 1) % total : (prev - 1 + total) % total)
   }
 
@@ -123,66 +123,71 @@ const StackedCards = ({ items }) => {
     <div className="flex flex-col items-center">
       {/* Card stack */}
       <div className="relative w-[260px] h-[295px]">
-        <AnimatePresence mode="popLayout">
-          {visibleIndices.map((idx, offset) => {
-            const m = items[idx]
-            const rotations = [0, 3, -2, 4]
-            // Next: new card rises from stack | Prev: new top card slides in from left
-            const enterInitial = direction === 'next'
-              ? { scale: 1 - (offset + 1) * 0.04, y: (offset + 1) * 12, x: (offset + 1) * 6, opacity: 0.3 }
-              : offset === 0
-                ? { x: -300, rotate: -15, opacity: 0 }
-                : { scale: 1 - (offset + 1) * 0.04, y: (offset + 1) * 12, x: (offset + 1) * 6, opacity: 0.3 }
-            // Next: top card flies off left | Prev: top card shrinks back into stack
-            const exitAnim = direction === 'next'
-              ? { x: -300, rotate: -15, opacity: 0 }
-              : { scale: 1 - 1 * 0.04, y: 1 * 12, x: 1 * 6, opacity: 0.3 }
-            return (
-              <motion.div key={`card-${idx}-${current}`}
-                className="absolute inset-0 bg-white p-2 rounded-sm shadow-2xl cursor-pointer flex flex-col"
-                style={{ zIndex: total - offset }}
-                initial={enterInitial}
-                animate={{
-                  scale: 1 - offset * 0.04,
-                  y: offset * 12,
-                  x: offset * 6,
-                  rotate: rotations[offset] || 0,
-                  opacity: offset === 0 ? 1 : 0.7 - offset * 0.15,
-                }}
-                exit={exitAnim}
-                transition={{ duration: 0.4 }}
-                drag={offset === 0 ? 'x' : false}
-                dragConstraints={{ left: 0, right: 0 }}
-                onDragEnd={(_, info) => {
-                  if (info.offset.x < -80) swipe('next')
-                  else if (info.offset.x > 80) swipe('prev')
-                }}
-              >
-                {/* tape */}
-                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 bg-yellow-100/80 rounded-sm shadow-sm"
-                  style={{ transform: 'translateX(-50%) rotate(-2deg)' }} />
-                {/* photo */}
-                <div className="aspect-square overflow-hidden rounded-sm">
-                  <img src={m.src} alt={m.caption} className="w-full h-full object-cover" draggable={false} />
-                </div>
-                {/* caption */}
-                <p className="flex-1 flex items-center justify-center text-center text-gray-600 text-sm leading-tight px-1"
-                  style={{ fontFamily: "'Caveat', cursive" }}>
-                  {m.caption}
-                </p>
-              </motion.div>
-            )
-          })}
-        </AnimatePresence>
+        {/* All cards always mounted — no AnimatePresence remounting */}
+        {items.map((m, idx) => {
+          const stackPos = visibleIndices.indexOf(idx)
+          const isVisible = stackPos !== -1
+          const offset = isVisible ? stackPos : 4
+          const rotations = [0, 3, -2, 4]
+
+          return (
+            <motion.div key={`card-${idx}`}
+              className="absolute inset-0 bg-white p-2 rounded-sm shadow-2xl cursor-pointer flex flex-col"
+              style={{ zIndex: isVisible ? total - offset : 0, pointerEvents: offset === 0 ? 'auto' : 'none' }}
+              animate={isVisible ? {
+                scale: 1 - offset * 0.04,
+                y: offset * 12,
+                x: offset * 6,
+                rotate: rotations[offset] || 0,
+                opacity: offset === 0 ? 1 : 0.7 - offset * 0.15,
+              } : { scale: 0.8, y: 48, x: 24, opacity: 0 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              drag={offset === 0 ? 'x' : false}
+              dragConstraints={{ left: 0, right: 0 }}
+              onDragEnd={(_, info) => {
+                if (info.offset.x < -80) swipe('next')
+                else if (info.offset.x > 80) swipe('prev')
+              }}
+            >
+              {/* tape */}
+              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 bg-yellow-100/80 rounded-sm shadow-sm"
+                style={{ transform: 'translateX(-50%) rotate(-2deg)' }} />
+              {/* photo */}
+              <div className="aspect-square overflow-hidden rounded-sm">
+                <img src={m.src} alt={m.caption} className="w-full h-full object-cover" draggable={false} />
+              </div>
+              {/* caption */}
+              <p className="flex-1 flex items-center justify-center text-center text-gray-600 text-sm leading-tight px-1"
+                style={{ fontFamily: "'Caveat', cursive" }}>
+                {m.caption}
+              </p>
+            </motion.div>
+          )
+        })}
       </div>
 
-      {/* Dots + counter */}
-      <div className="flex gap-1.5 mt-6">
-        {items.map((_, i) => (
-          <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 ${i === current % total ? 'bg-pink-400 scale-125' : 'bg-white/20'}`} />
-        ))}
+      {/* 5-dot indicator — slides with swipe */}
+      <div className="flex items-center justify-center mt-6">
+        <div className="flex items-center gap-2">
+          {[-2, -1, 0, 1, 2].map(offset => {
+            const dotIdx = ((current + offset) % total + total) % total
+            const sizes = [5, 7, 11, 7, 5]
+            const size = sizes[offset + 2]
+            const isCenter = offset === 0
+            return (
+              <motion.div
+                key={dotIdx}
+                layout
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                className="rounded-full"
+                animate={{
+                  width: size, height: size,
+                  backgroundColor: isCenter ? '#f472b6' : 'rgba(255,255,255,0.25)',
+                }} />
+            )
+          })}
+        </div>
       </div>
-      <p className="text-white/30 text-xs mt-2">{(current % total) + 1} / {total}</p>
     </div>
   )
 }
