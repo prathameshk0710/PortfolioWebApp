@@ -468,12 +468,12 @@ export default function DeepanjaliLetter() {
       ] */
 
   return (
-    <div className="overflow-x-hidden" style={{ background: '#0f172a' }}>
+    <div className="overflow-x-hidden overflow-y-auto" style={{ background: '#0f172a' }}>
       <AnimatePresence>
         {showSplash && <HeartbeatIntro onComplete={() => setShowSplash(false)} />}
       </AnimatePresence>
 
-      <div className="min-h-screen relative"
+      <div className="relative"
         style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 15%, #1a1f3d 35%, #1e293b 55%, #0f172a 75%, #0f172a 100%)' }}>
 
         {/* Floating particles */}
@@ -596,7 +596,7 @@ export default function DeepanjaliLetter() {
 
           {/* ── Final wish ── */}
           <ConfettiBurst />
-          <motion.div className="text-center pb-16"
+          <motion.div className="text-center pb-8"
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.8 }}>
             <div className="backdrop-blur-xl bg-white/5 rounded-3xl p-8 md:p-10 border border-pink-300/15">
