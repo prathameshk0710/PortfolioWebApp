@@ -63,7 +63,7 @@ const StackedCards = ({ items }) => {
   return (
     <div className="flex flex-col items-center">
       {/* Card stack */}
-      <div className="relative w-[260px] h-[340px]">
+      <div className="relative w-[260px] h-[295px]">
         <AnimatePresence mode="popLayout">
           {items.map((m, i) => {
             const offset = i - current
@@ -71,7 +71,7 @@ const StackedCards = ({ items }) => {
             const rotations = [0, 3, -2, 4]
             return (
               <motion.div key={i}
-                className="absolute inset-0 bg-white p-2 pb-10 rounded-sm shadow-2xl cursor-pointer"
+                className="absolute inset-0 bg-white p-2 rounded-sm shadow-2xl cursor-pointer flex flex-col"
                 style={{ zIndex: total - offset }}
                 initial={{ scale: 0.9, y: 30, opacity: 0 }}
                 animate={{
@@ -98,7 +98,7 @@ const StackedCards = ({ items }) => {
                   <img src={m.src} alt={m.caption} className="w-full h-full object-cover" draggable={false} />
                 </div>
                 {/* caption */}
-                <p className="absolute bottom-2 inset-x-2 text-center text-gray-600 text-sm leading-tight"
+                <p className="flex-1 flex items-center justify-center text-center text-gray-600 text-sm leading-tight px-1"
                   style={{ fontFamily: "'Caveat', cursive" }}>
                   {m.caption}
                 </p>
@@ -318,6 +318,8 @@ export default function DeepanjaliLetter() {
   useEffect(() => {
     if (sessionStorage.getItem('surprise_auth') !== 'true') {
       navigate('/surprise', { replace: true })
+    } else {
+      window.scrollTo(0, 0)
     }
   }, [navigate])
 
