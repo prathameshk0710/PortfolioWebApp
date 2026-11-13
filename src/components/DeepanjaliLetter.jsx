@@ -30,8 +30,8 @@ const Polaroid = ({ index, src, caption, rotate }) => {
   const inView = useInView(ref, { once: true, margin: '-40px' })
   return (
     <motion.div ref={ref}
-      initial={{ opacity: 0, y: 30, rotate: 0 }}
-      animate={inView ? { opacity: 1, y: 0, rotate: typeof window !== 'undefined' && window.innerWidth >= 768 ? rotate : 0 } : {}}
+      initial={{ opacity: 0, y: 30, rotate: rotate - 5 }}
+      animate={inView ? { opacity: 1, y: 0, rotate } : {}}
       whileHover={{ scale: 1.05, rotate: 0, zIndex: 10 }}
       transition={{ duration: 0.6, delay: (index % 3) * 0.1 }}
       className="bg-white p-1.5 pb-8 sm:p-2 sm:pb-10 md:p-3 md:pb-12 rounded-sm shadow-2xl cursor-pointer relative group flex-shrink-0 w-[200px] sm:w-auto">
