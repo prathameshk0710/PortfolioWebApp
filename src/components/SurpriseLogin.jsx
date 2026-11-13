@@ -70,13 +70,13 @@ export default function SurpriseLogin() {
                 <label className="block text-pink-300/70 text-sm mb-2 pl-1">Who are you?</label>
                 <input type="text" value={username} onChange={(e) => { setUsername(e.target.value); setError('') }}
                   placeholder="Enter your name..."
-                  className="w-full px-5 py-3.5 rounded-xl bg-white/10 border border-pink-300/20 text-white placeholder-white/30 focus:outline-none focus:border-pink-400/60 focus:bg-white/15 transition-all duration-300 text-sm" />
+                  className="w-full px-5 py-3.5 rounded-xl bg-white/10 border border-pink-300/20 text-white placeholder-white/30 focus:outline-none focus:border-pink-400/60 focus:bg-white/15 transition-all duration-300 text-base" />
               </div>
               <div>
                 <label className="block text-pink-300/70 text-sm mb-2 pl-1">Secret code</label>
                 <input type="password" value={password} onChange={(e) => { setPassword(e.target.value); setError('') }}
                   placeholder="Enter the magic number..."
-                  className="w-full px-5 py-3.5 rounded-xl bg-white/10 border border-pink-300/20 text-white placeholder-white/30 focus:outline-none focus:border-pink-400/60 focus:bg-white/15 transition-all duration-300 text-sm" />
+                  className="w-full px-5 py-3.5 rounded-xl bg-white/10 border border-pink-300/20 text-white placeholder-white/30 focus:outline-none focus:border-pink-400/60 focus:bg-white/15 transition-all duration-300 text-base" />
               </div>
             </div>
 
