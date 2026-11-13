@@ -105,29 +105,31 @@ const AutoCarousel = ({ items }) => {
   )
 }
 
-/* ── Stacked Cards (mobile) ── */
+/* ── Stacked Cards (mobile, infinite loop) ── */
 const StackedCards = ({ items }) => {
   const [current, setCurrent] = useState(0)
   const total = items.length
 
   const swipe = (dir) => {
-    setCurrent(prev => dir === 'next' ? Math.min(prev + 1, total - 1) : Math.max(prev - 1, 0))
+    setCurrent(prev => dir === 'next' ? (prev + 1) % total : (prev - 1 + total) % total)
   }
+
+  // Get the visible stack: current + next 3 (wrapping around)
+  const visibleIndices = [0, 1, 2, 3].map(offset => (current + offset) % total)
 
   return (
     <div className="flex flex-col items-center">
       {/* Card stack */}
       <div className="relative w-[260px] h-[295px]">
         <AnimatePresence mode="popLayout">
-          {items.map((m, i) => {
-            const offset = i - current
-            if (offset < 0 || offset > 3) return null
+          {visibleIndices.map((idx, offset) => {
+            const m = items[idx]
             const rotations = [0, 3, -2, 4]
             return (
-              <motion.div key={i}
+              <motion.div key={`card-${idx}-${current}`}
                 className="absolute inset-0 bg-white p-2 rounded-sm shadow-2xl cursor-pointer flex flex-col"
                 style={{ zIndex: total - offset }}
-                initial={{ scale: 0.9, y: 30, opacity: 0 }}
+                initial={offset === 0 ? { scale: 0.9, x: 300, rotate: 15, opacity: 0 } : { scale: 0.9, y: 30, opacity: 0 }}
                 animate={{
                   scale: 1 - offset * 0.04,
                   y: offset * 12,
@@ -165,10 +167,10 @@ const StackedCards = ({ items }) => {
       {/* Dots + counter */}
       <div className="flex gap-1.5 mt-6">
         {items.map((_, i) => (
-          <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 ${i === current ? 'bg-pink-400 scale-125' : 'bg-white/20'}`} />
+          <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 ${i === current % total ? 'bg-pink-400 scale-125' : 'bg-white/20'}`} />
         ))}
       </div>
-      <p className="text-white/30 text-xs mt-2">{current + 1} / {total}</p>
+      <p className="text-white/30 text-xs mt-2">{(current % total) + 1} / {total}</p>
     </div>
   )
 }
