@@ -14,6 +14,9 @@ const memories = [
   { src: '/photos/7.jpg', caption: 'Best Ganesh Chaturthi ever \uD83D\uDE4F\u2728', rotate: -3 },
   { src: '/photos/8.jpg', caption: 'Cuties together \uD83E\uDD17\uD83D\uDC95', rotate: 4 },
   { src: "/photos/9.jpg", caption: "It\u0027s just us time \uD83D\uDC96", rotate: -2 },
+  { src: '/photos/10.jpg', caption: 'The day when it all began \u2728\uD83D\uDC96', rotate: 3 },
+  { src: '/photos/11.jpg', caption: 'Best trip we ever had \uD83C\uDF0D\u2708\uFE0F', rotate: -4 },
+  { src: '/photos/12.jpg', caption: 'Nola Gola Pola \uD83D\uDE02\uD83C\uDF67', rotate: 2 },
 ]
 
 /* cleaned below �', rotate: 4 },
@@ -48,6 +51,57 @@ const Polaroid = ({ index, src, caption, rotate }) => {
         {caption}
       </p>
     </motion.div>
+  )
+}
+
+/* ── Auto-scroll Carousel (desktop, two rows) ── */
+const PolaroidCard = ({ m }) => (
+  <div className="bg-white p-3 pb-12 rounded-sm shadow-2xl cursor-pointer relative group flex-shrink-0 hover:scale-105 hover:z-10 transition-transform duration-300"
+    style={{ width: '210px', transform: `rotate(${m.rotate}deg)` }}>
+    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-4 bg-yellow-100/80 rounded-sm shadow-sm"
+      style={{ transform: 'translateX(-50%) rotate(-2deg)' }} />
+    <div className="aspect-square overflow-hidden rounded-sm">
+      <img src={m.src} alt={m.caption}
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        draggable={false} />
+    </div>
+    <p className="absolute bottom-3 inset-x-2 text-center text-gray-600 text-base leading-tight"
+      style={{ fontFamily: "'Caveat', cursive" }}>
+      {m.caption}
+    </p>
+  </div>
+)
+
+const AutoCarousel = ({ items }) => {
+  const half = Math.ceil(items.length / 2)
+  const topItems = items.slice(0, half)
+  const bottomItems = items.slice(half)
+
+  return (
+    <div className="hidden md:block relative w-full overflow-hidden"
+      style={{ '--card-w': '234px' }}>
+      {/* Gradient fades */}
+      <div className="absolute left-0 top-0 bottom-0 w-16 z-20 pointer-events-none"
+        style={{ background: 'linear-gradient(to right, rgba(30,41,59,1), transparent)' }} />
+      <div className="absolute right-0 top-0 bottom-0 w-16 z-20 pointer-events-none"
+        style={{ background: 'linear-gradient(to left, rgba(30,41,59,1), transparent)' }} />
+
+      {/* Top row — scrolls right */}
+      <div className="overflow-hidden py-4">
+        <div className="flex gap-6 animate-scroll-right hover:[animation-play-state:paused]"
+          style={{ width: `calc(${topItems.length} * var(--card-w) * 2)` }}>
+          {[...topItems, ...topItems].map((m, i) => <PolaroidCard key={`t${i}`} m={m} />)}
+        </div>
+      </div>
+
+      {/* Bottom row — scrolls left */}
+      <div className="overflow-hidden py-4">
+        <div className="flex gap-6 animate-scroll-left hover:[animation-play-state:paused]"
+          style={{ width: `calc(${bottomItems.length} * var(--card-w) * 2)` }}>
+          {[...bottomItems, ...bottomItems].map((m, i) => <PolaroidCard key={`b${i}`} m={m} />)}
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -455,11 +509,8 @@ export default function DeepanjaliLetter() {
             <div className="md:hidden">
               <StackedCards items={memories} />
             </div>
-            <div className="hidden md:grid grid-cols-3 gap-8 justify-items-center">
-              {memories.map((m, i) => (
-                <Polaroid key={i} index={i} src={m.src} caption={m.caption} rotate={m.rotate} />
-              ))}
-            </div>
+            {/* Desktop: Auto-scroll Carousel */}
+            <AutoCarousel items={memories} />
           </motion.div>
 
           {/* ── Final wish ── */}
