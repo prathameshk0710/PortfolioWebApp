@@ -55,8 +55,9 @@ const Polaroid = ({ index, src, caption, rotate }) => {
 }
 
 /* ── Auto-scroll Carousel (desktop, two rows) ── */
-const PolaroidCard = ({ m }) => (
-  <div className="bg-white p-3 pb-12 rounded-sm shadow-2xl cursor-pointer relative group flex-shrink-0 hover:scale-105 hover:z-10 transition-transform duration-300"
+const PolaroidCard = ({ m, onClick }) => (
+  <div onClick={onClick}
+    className="bg-white p-3 pb-12 rounded-sm shadow-2xl cursor-pointer relative group flex-shrink-0 hover:scale-105 hover:z-10 transition-transform duration-300"
     style={{ width: '210px', transform: `rotate(${m.rotate}deg)` }}>
     <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-4 bg-yellow-100/80 rounded-sm shadow-sm"
       style={{ transform: 'translateX(-50%) rotate(-2deg)' }} />
@@ -72,43 +73,92 @@ const PolaroidCard = ({ m }) => (
   </div>
 )
 
+/* ── Photo Lightbox ── */
+const Lightbox = ({ photo, onClose }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.25 }}
+    className="fixed inset-0 z-50 flex items-center justify-center"
+    onClick={onClose}>
+    {/* Blurred backdrop */}
+    <div className="absolute inset-0 bg-black/70 backdrop-blur-md" />
+    {/* Polaroid */}
+    <motion.div
+      initial={{ scale: 0.8, rotate: photo.rotate }}
+      animate={{ scale: 1, rotate: 0 }}
+      exit={{ scale: 0.8, opacity: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+      className="relative bg-white p-4 pb-16 rounded-sm shadow-2xl max-w-[80vw] max-h-[85vh]"
+      onClick={e => e.stopPropagation()}>
+      {/* Close button */}
+      <button onClick={onClose}
+        className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-white shadow-lg text-gray-500 hover:text-gray-800 flex items-center justify-center text-lg z-10 transition-colors">
+        ✕
+      </button>
+      {/* Tape */}
+      <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-14 h-5 bg-yellow-100/80 rounded-sm shadow-sm"
+        style={{ transform: 'translateX(-50%) rotate(-2deg)' }} />
+      {/* Photo */}
+      <img src={photo.src} alt={photo.caption}
+        className="max-h-[65vh] w-auto object-contain rounded-sm" />
+      {/* Caption */}
+      <p className="absolute bottom-4 inset-x-4 text-center text-gray-600 text-xl leading-tight"
+        style={{ fontFamily: "'Caveat', cursive" }}>
+        {photo.caption}
+      </p>
+    </motion.div>
+  </motion.div>
+)
+
 const AutoCarousel = ({ items }) => {
   const half = Math.ceil(items.length / 2)
   const topItems = items.slice(0, half)
   const bottomItems = items.slice(half)
+  const [lightbox, setLightbox] = useState(null)
 
   return (
-    <div className="hidden md:block relative w-full overflow-hidden"
-      style={{ '--card-w': '234px' }}>
-      {/* Gradient fades */}
-      <div className="absolute left-0 top-0 bottom-0 w-16 z-20 pointer-events-none"
-        style={{ background: 'linear-gradient(to right, rgba(30,41,59,1), transparent)' }} />
-      <div className="absolute right-0 top-0 bottom-0 w-16 z-20 pointer-events-none"
-        style={{ background: 'linear-gradient(to left, rgba(30,41,59,1), transparent)' }} />
+    <>
+      <div className="hidden md:block relative w-full overflow-hidden"
+        style={{ '--card-w': '234px' }}>
+        {/* Gradient fades */}
+        <div className="absolute left-0 top-0 bottom-0 w-16 z-20 pointer-events-none"
+          style={{ background: 'linear-gradient(to right, rgba(30,41,59,1), transparent)' }} />
+        <div className="absolute right-0 top-0 bottom-0 w-16 z-20 pointer-events-none"
+          style={{ background: 'linear-gradient(to left, rgba(30,41,59,1), transparent)' }} />
 
-      {/* Top row — scrolls right */}
-      <div className="overflow-hidden py-4">
-        <div className="flex gap-6 animate-scroll-right hover:[animation-play-state:paused]"
-          style={{ width: `calc(${topItems.length} * var(--card-w) * 2)` }}>
-          {[...topItems, ...topItems].map((m, i) => <PolaroidCard key={`t${i}`} m={m} />)}
+        {/* Top row — scrolls right */}
+        <div className="overflow-hidden py-4">
+          <div className="flex gap-6 animate-scroll-right hover:[animation-play-state:paused]"
+            style={{ width: `calc(${topItems.length} * var(--card-w) * 2)` }}>
+            {[...topItems, ...topItems].map((m, i) => <PolaroidCard key={`t${i}`} m={m} onClick={() => setLightbox(m)} />)}
+          </div>
+        </div>
+
+        {/* Bottom row — scrolls left */}
+        <div className="overflow-hidden py-4">
+          <div className="flex gap-6 animate-scroll-left hover:[animation-play-state:paused]"
+            style={{ width: `calc(${bottomItems.length} * var(--card-w) * 2)` }}>
+            {[...bottomItems, ...bottomItems].map((m, i) => <PolaroidCard key={`b${i}`} m={m} onClick={() => setLightbox(m)} />)}
+          </div>
         </div>
       </div>
 
-      {/* Bottom row — scrolls left */}
-      <div className="overflow-hidden py-4">
-        <div className="flex gap-6 animate-scroll-left hover:[animation-play-state:paused]"
-          style={{ width: `calc(${bottomItems.length} * var(--card-w) * 2)` }}>
-          {[...bottomItems, ...bottomItems].map((m, i) => <PolaroidCard key={`b${i}`} m={m} />)}
-        </div>
-      </div>
-    </div>
+      {/* Lightbox overlay */}
+      <AnimatePresence>
+        {lightbox && <Lightbox photo={lightbox} onClose={() => setLightbox(null)} />}
+      </AnimatePresence>
+    </>
   )
 }
 
 /* ── Stacked Cards (mobile, infinite loop) ── */
 const StackedCards = ({ items }) => {
   const [current, setCurrent] = useState(0)
+  const [lightbox, setLightbox] = useState(null)
   const dirRef = useRef('next')
+  const draggedRef = useRef(false)
   const total = items.length
 
   const swipe = (dir) => {
@@ -120,75 +170,87 @@ const StackedCards = ({ items }) => {
   const visibleIndices = [0, 1, 2, 3].map(offset => (current + offset) % total)
 
   return (
-    <div className="flex flex-col items-center">
-      {/* Card stack */}
-      <div className="relative w-[260px] h-[295px]">
-        {/* All cards always mounted — no AnimatePresence remounting */}
-        {items.map((m, idx) => {
-          const stackPos = visibleIndices.indexOf(idx)
-          const isVisible = stackPos !== -1
-          const offset = isVisible ? stackPos : 4
-          const rotations = [0, 3, -2, 4]
+    <>
+      <div className="flex flex-col items-center">
+        {/* Card stack */}
+        <div className="relative w-[260px] h-[295px]">
+          {/* All cards always mounted — no AnimatePresence remounting */}
+          {items.map((m, idx) => {
+            const stackPos = visibleIndices.indexOf(idx)
+            const isVisible = stackPos !== -1
+            const offset = isVisible ? stackPos : 4
+            const rotations = [0, 3, -2, 4]
 
-          return (
-            <motion.div key={`card-${idx}`}
-              className="absolute inset-0 bg-white p-2 rounded-sm shadow-2xl cursor-pointer flex flex-col"
-              style={{ zIndex: isVisible ? total - offset : 0, pointerEvents: offset === 0 ? 'auto' : 'none' }}
-              animate={isVisible ? {
-                scale: 1 - offset * 0.04,
-                y: offset * 12,
-                x: offset * 6,
-                rotate: rotations[offset] || 0,
-                opacity: offset === 0 ? 1 : 0.7 - offset * 0.15,
-              } : { scale: 0.8, y: 48, x: 24, opacity: 0 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-              drag={offset === 0 ? 'x' : false}
-              dragConstraints={{ left: 0, right: 0 }}
-              onDragEnd={(_, info) => {
-                if (info.offset.x < -80) swipe('next')
-                else if (info.offset.x > 80) swipe('prev')
-              }}
-            >
-              {/* tape */}
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 bg-yellow-100/80 rounded-sm shadow-sm"
-                style={{ transform: 'translateX(-50%) rotate(-2deg)' }} />
-              {/* photo */}
-              <div className="aspect-square overflow-hidden rounded-sm">
-                <img src={m.src} alt={m.caption} className="w-full h-full object-cover" draggable={false} />
-              </div>
-              {/* caption */}
-              <p className="flex-1 flex items-center justify-center text-center text-gray-600 text-sm leading-tight px-1"
-                style={{ fontFamily: "'Caveat', cursive" }}>
-                {m.caption}
-              </p>
-            </motion.div>
-          )
-        })}
-      </div>
-
-      {/* 5-dot indicator — slides with swipe */}
-      <div className="flex items-center justify-center mt-6">
-        <div className="flex items-center gap-2">
-          {[-2, -1, 0, 1, 2].map(offset => {
-            const dotIdx = ((current + offset) % total + total) % total
-            const sizes = [5, 7, 11, 7, 5]
-            const size = sizes[offset + 2]
-            const isCenter = offset === 0
             return (
-              <motion.div
-                key={dotIdx}
-                layout
-                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                className="rounded-full"
-                animate={{
-                  width: size, height: size,
-                  backgroundColor: isCenter ? '#f472b6' : 'rgba(255,255,255,0.25)',
-                }} />
+              <motion.div key={`card-${idx}`}
+                className="absolute inset-0 bg-white p-2 rounded-sm shadow-2xl cursor-pointer flex flex-col"
+                style={{ zIndex: isVisible ? total - offset : 0, pointerEvents: offset === 0 ? 'auto' : 'none' }}
+                animate={isVisible ? {
+                  scale: 1 - offset * 0.04,
+                  y: offset * 12,
+                  x: offset * 6,
+                  rotate: rotations[offset] || 0,
+                  opacity: offset === 0 ? 1 : 0.7 - offset * 0.15,
+                } : { scale: 0.8, y: 48, x: 24, opacity: 0 }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
+                drag={offset === 0 ? 'x' : false}
+                dragConstraints={{ left: 0, right: 0 }}
+                onDragStart={() => { draggedRef.current = true }}
+                onDragEnd={(_, info) => {
+                  if (info.offset.x < -80) swipe('next')
+                  else if (info.offset.x > 80) swipe('prev')
+                  setTimeout(() => { draggedRef.current = false }, 50)
+                }}
+                onTap={() => {
+                  if (offset === 0 && !draggedRef.current) setLightbox(m)
+                }}
+              >
+                {/* tape */}
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 bg-yellow-100/80 rounded-sm shadow-sm"
+                  style={{ transform: 'translateX(-50%) rotate(-2deg)' }} />
+                {/* photo */}
+                <div className="aspect-square overflow-hidden rounded-sm">
+                  <img src={m.src} alt={m.caption} className="w-full h-full object-cover" draggable={false} />
+                </div>
+                {/* caption */}
+                <p className="flex-1 flex items-center justify-center text-center text-gray-600 text-sm leading-tight px-1"
+                  style={{ fontFamily: "'Caveat', cursive" }}>
+                  {m.caption}
+                </p>
+              </motion.div>
             )
           })}
         </div>
+
+        {/* 5-dot indicator — slides with swipe */}
+        <div className="flex items-center justify-center mt-6">
+          <div className="flex items-center gap-2">
+            {[-2, -1, 0, 1, 2].map(offset => {
+              const dotIdx = ((current + offset) % total + total) % total
+              const sizes = [5, 7, 11, 7, 5]
+              const size = sizes[offset + 2]
+              const isCenter = offset === 0
+              return (
+                <motion.div
+                  key={dotIdx}
+                  layout
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  className="rounded-full"
+                  animate={{
+                    width: size, height: size,
+                    backgroundColor: isCenter ? '#f472b6' : 'rgba(255,255,255,0.25)',
+                  }} />
+              )
+            })}
+          </div>
+        </div>
       </div>
-    </div>
+
+      {/* Lightbox overlay */}
+      <AnimatePresence>
+        {lightbox && <Lightbox photo={lightbox} onClose={() => setLightbox(null)} />}
+      </AnimatePresence>
+    </>
   )
 }
 
@@ -398,12 +460,12 @@ export default function DeepanjaliLetter() {
 
   if (sessionStorage.getItem('surprise_auth') !== 'true') return null
 
-  /* { emoji: '�', text: 'That hours-long first call' },
-  { emoji: '😂', text: 'Surviving every Kalesh' },
-  { emoji: '🤝', text: 'Always coming back stronger' },
-  { emoji: '🥹', text: 'Through every tough time' },
-  { emoji: '❤️', text: '4 years & counting' },
-  ] */
+  /* {emoji: '�', text: 'That hours-long first call' },
+      {emoji: '😂', text: 'Surviving every Kalesh' },
+      {emoji: '🤝', text: 'Always coming back stronger' },
+      {emoji: '🥹', text: 'Through every tough time' },
+      {emoji: '❤️', text: '4 years & counting' },
+      ] */
 
   return (
     <div className="overflow-x-hidden" style={{ background: '#0f172a' }}>
