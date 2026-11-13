@@ -108,9 +108,11 @@ const AutoCarousel = ({ items }) => {
 /* ── Stacked Cards (mobile, infinite loop) ── */
 const StackedCards = ({ items }) => {
   const [current, setCurrent] = useState(0)
+  const [direction, setDirection] = useState('next')
   const total = items.length
 
   const swipe = (dir) => {
+    setDirection(dir)
     setCurrent(prev => dir === 'next' ? (prev + 1) % total : (prev - 1 + total) % total)
   }
 
@@ -125,11 +127,21 @@ const StackedCards = ({ items }) => {
           {visibleIndices.map((idx, offset) => {
             const m = items[idx]
             const rotations = [0, 3, -2, 4]
+            // Next: new card rises from stack | Prev: new top card slides in from left
+            const enterInitial = direction === 'next'
+              ? { scale: 1 - (offset + 1) * 0.04, y: (offset + 1) * 12, x: (offset + 1) * 6, opacity: 0.3 }
+              : offset === 0
+                ? { x: -300, rotate: -15, opacity: 0 }
+                : { scale: 1 - (offset + 1) * 0.04, y: (offset + 1) * 12, x: (offset + 1) * 6, opacity: 0.3 }
+            // Next: top card flies off left | Prev: top card shrinks back into stack
+            const exitAnim = direction === 'next'
+              ? { x: -300, rotate: -15, opacity: 0 }
+              : { scale: 1 - 1 * 0.04, y: 1 * 12, x: 1 * 6, opacity: 0.3 }
             return (
               <motion.div key={`card-${idx}-${current}`}
                 className="absolute inset-0 bg-white p-2 rounded-sm shadow-2xl cursor-pointer flex flex-col"
                 style={{ zIndex: total - offset }}
-                initial={offset === 0 ? { scale: 0.9, x: 300, rotate: 15, opacity: 0 } : { scale: 0.9, y: 30, opacity: 0 }}
+                initial={enterInitial}
                 animate={{
                   scale: 1 - offset * 0.04,
                   y: offset * 12,
@@ -137,7 +149,7 @@ const StackedCards = ({ items }) => {
                   rotate: rotations[offset] || 0,
                   opacity: offset === 0 ? 1 : 0.7 - offset * 0.15,
                 }}
-                exit={{ x: -300, rotate: -15, opacity: 0 }}
+                exit={exitAnim}
                 transition={{ duration: 0.4 }}
                 drag={offset === 0 ? 'x' : false}
                 dragConstraints={{ left: 0, right: 0 }}
